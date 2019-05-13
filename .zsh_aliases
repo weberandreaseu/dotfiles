@@ -1,0 +1,4 @@
+alias audio=pavucontrol
+alias dc=docker-compose
+alias dotfile='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
