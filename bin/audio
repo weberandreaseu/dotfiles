@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# switch between different audio profiles
+
+CARD_ID=0
+ANALOG_PROFILE=output:analog-stereo+input:analog-stereo
+HDMI_PROFILE=output:hdmi-stereo+input:analog-stereo
+
+# activate HDMI profile
+hdmi() {
+    pactl set-card-profile $CARD_ID $HDMI_PROFILE
+}
+
+# activate analog profile
+analog() {
+    pactl set-card-profile $CARD_ID $ANALOG_PROFILE
+}
+
+# toggle profiles
+toggle() {
+    # get acitve profile
+    if pacmd list-cards | grep --quiet "active profile: <$HDMI_PROFILE>"; then
+        analog
+    else
+        hdmi
+    fi
+}
+
+case "$1" in
+analog)
+    analog
+    ;;
+hdmi)
+    hdmi
+    ;;
+help | --help)
+    echo "Usage: audio [analog|hdmi]"
+    echo "  If no profile specified toogle between profiles"
+    ;;
+""|toggle)
+    toggle
+    ;;
+*)
+    echo "Usage: audio [analog|hdmi]"
+    echo "  If no profile specified toogle between profiles"
+    exit 1
+    ;;
+esac
