@@ -5,7 +5,7 @@
 export ZSH=$HOME/.oh-my-zsh
 
 # oh my zsh theme
-ZSH_THEME="robbyrussell"
+ZSH_THEME="custom"
 
 # oh my zsh plugins
 plugins=(git autojump)
@@ -16,7 +16,7 @@ source $ZSH/oh-my-zsh.sh
 source $HOME/.zsh_aliases
 
 
-# fiel with environment variables
+# file with environment variables
 source $HOME/.zsh_env
 
 # begin conda initialize
