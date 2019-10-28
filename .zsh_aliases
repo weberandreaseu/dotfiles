@@ -3,8 +3,10 @@ alias dc=docker-compose
 alias dotfile='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # attach to existing tmux session or create new session when connecting via ssh
-ssh-tmux () {
-        /usr/bin/ssh -t $@ "tmux attach || tmux new"
+ssh-tmux() {
+    /usr/bin/ssh -t "$@" "tmux attach || tmux new"
 }
 
-
+csv() {
+    column -s, -t <"$@" | less -#2 -N -S
+}
