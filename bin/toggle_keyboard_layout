@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+# get current keyboard layout
+layout=$(setxkbmap -query | grep layout | awk '{print $NF}')
+
+if [ "$layout" = "us" ]; then
+	setxkbmap de
+else
+	setxkbmap us
+fi
