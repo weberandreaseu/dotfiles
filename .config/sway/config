@@ -1,5 +1,7 @@
 # Default config for sway
 #
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
@@ -12,47 +14,66 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term kitty
+set $term alacritty
+
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu dmenu_path | i3-dmenu-desktop | xargs swaymsg exec --
-# set $menu dmenu_path | dmenu | xargs swaymsg exec --
+for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10
+set $menu exec $term --class=launcher -e /usr/bin/sway-launcher-desktop
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg $HOME/.config/sway/wallpaper.jpg fill
-#
+output * bg ~/.config/sway/wallpaper.jpg fill
+
 # Example configuration:
-#
-output eDP-1 resolution 1920x1080 position 0,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
+output eDP-1 pos 0 360
+output 'Lenovo Group Limited LEN P27h-10 0x00007F4D' pos 1920 0
+output 'Lenovo Group Limited LEN P27h-10 0x00007F59' pos 4480 0
+
 
 ### Idle configuration
 #
 # Example configuration:
-#
 # exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * dpms off"' \
-#               resume 'swaymsg "output * dpms on"' \
-#          before-sleep 'swaylock -f -c 000000'
+#	timeout 180 'swaylock -f -c 000000' \
+#	timeout 240 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+#	before-sleep 'swaylock -f -c 000000'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
-
-input "1267:12419:ETD2303:00_04F3:3083_Touchpad" {
-    dwt enabled
-    tap enabled
-    natural_scroll enabled
-    middle_emulation enabled
-}
 #
+# Example configuration:
+#
+input type:touchpad {
+	tap enabled
+	natural_scroll enabled
+}
+
+input type:keyboard {
+    xkb_layout us,de
+    xkb_numlock enabled
+}
+
+# audio controls
+bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ #increase sound volume
+bindsym XF86AudioLowerVolume exec amixer set Master 5%- #decrease sound volume
+bindsym XF86AudioMute exec amixer set Master 1+ toggle # mute sound
+
+# media controls
+bindsym XF86AudioPlay exec playerctl play-pause # play/pause music
+bindsym XF86AudioPrev exec playerctl previous # previous song
+bindsym XF86AudioNext exec playerctl next # next song
+
+# brightness
+bindsym XF86MonBrightnessUp exec light -A 5  # increase screen brightness
+bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
+
+
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
@@ -109,52 +130,34 @@ input "1267:12419:ETD2303:00_04F3:3083_Touchpad" {
 # Workspaces:
 #
     # Switch to workspace
-    bindsym $mod+1 workspace 1
-    bindsym $mod+2 workspace 2
-    bindsym $mod+3 workspace 3
-    bindsym $mod+4 workspace 4
-    bindsym $mod+5 workspace 5
-    bindsym $mod+6 workspace 6
-    bindsym $mod+7 workspace 7
-    bindsym $mod+8 workspace 8
-    bindsym $mod+9 workspace 9
-    bindsym $mod+0 workspace 10
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace 1
-    bindsym $mod+Shift+2 move container to workspace 2
-    bindsym $mod+Shift+3 move container to workspace 3
-    bindsym $mod+Shift+4 move container to workspace 4
-    bindsym $mod+Shift+5 move container to workspace 5
-    bindsym $mod+Shift+6 move container to workspace 6
-    bindsym $mod+Shift+7 move container to workspace 7
-    bindsym $mod+Shift+8 move container to workspace 8
-    bindsym $mod+Shift+9 move container to workspace 9
-    bindsym $mod+Shift+0 move container to workspace 10
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
-
-    # audio volume
-    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-    bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-
-    # display brightness
-    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-
-    # media controls
-    bindsym XF86AudioPlay exec playerctl play-pause
-    bindsym XF86AudioNext exec playerctl next
-    bindsym XF86AudioPrev exec playerctl previous
-
-
-
 #
 # Layout stuff:
 #
     # You can "split" the current object of your focus with
-    # $mod+h or $mod+v, for horizontal and vertical splits
+    # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
     bindsym $mod+b splith
     bindsym $mod+v splitv
@@ -175,11 +178,6 @@ input "1267:12419:ETD2303:00_04F3:3083_Touchpad" {
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
-
-    # spotify: no border
-    for_window [class="^Spotify$"] border none
-    for_window [class="^Spotify Premium$"] border none
-
 #
 # Scratchpad:
 #
@@ -200,16 +198,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 25px
-    bindsym $down resize grow height 25px
-    bindsym $up resize shrink height 25px
-    bindsym $right resize grow width 25px
+    bindsym $left resize shrink width 20px
+    bindsym $down resize grow height 20px
+    bindsym $up resize shrink height 20px
+    bindsym $right resize grow width 20px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 25px
-    bindsym Down resize grow height 25px
-    bindsym Up resize shrink height 25px
-    bindsym Right resize grow width 25px
+    bindsym Left resize shrink width 20px
+    bindsym Down resize grow height 20px
+    bindsym Up resize shrink height 20px
+    bindsym Right resize grow width 10px
 
     # Return to default mode
     bindsym Return mode "default"
@@ -217,28 +215,34 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
+
+#
+# Appearance
+#
+font pango:Liberation Medium 10
+
+# spotify: no border
+for_window [class="^Spotify$"] border none
+for_window [class="^Spotify Premium$"] border none
+
+
 #
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-# inactive_workspace #32323200 #32323200 #5c5c5c
 bar {
     position bottom
+    font pango:Font Awesome 5 Free, Leberation Mono 10
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    swaybar_command waybar
+    status_command i3status-rs
 
     colors {
         statusline #ffffff
         background #323232
-        inactive_workspace #323232 #323232 #5c5c5c
+        inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
-
-
-# open browser with new tab
-bindsym $mod+n exec firefox duckduckgo.com
 
 include /etc/sway/config.d/*
