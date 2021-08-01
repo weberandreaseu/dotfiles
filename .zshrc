@@ -5,7 +5,7 @@
 export ZSH=$HOME/.oh-my-zsh
 
 # oh my zsh theme
-ZSH_THEME="custom"
+ZSH_THEME="robbyrussell"
 
 # oh my zsh plugins
 plugins=(git autojump)
@@ -14,7 +14,6 @@ source $ZSH/oh-my-zsh.sh
 
 # file with aliases
 source $HOME/.zsh_aliases
-
 
 # file with environment variables
 source $HOME/.zsh_env
