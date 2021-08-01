@@ -25,4 +25,3 @@ set backspace=indent,eol,start	" Backspace behaviour
 
 "" Syntax highlighting
 syntax on			" Enable syntax highlighting
-colorscheme base16-chalk	" Base16 based colorscheme 
