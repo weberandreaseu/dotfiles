@@ -231,6 +231,10 @@ for_window [class="^Spotify$"] border none
 for_window [class="^Spotify Premium$"] border none
 
 
+# Autostart
+
+exec --no-startup-id "QT_QPA_PLATFORM=xcb /opt/enpass/Enpass -minimize"
+
 #
 # Status Bar:
 #
@@ -250,4 +254,4 @@ bar {
     }
 }
 
-include /etc/sway/config.d/*
+
