@@ -77,6 +77,9 @@ bindsym XF86AudioNext exec playerctl next # next song
 bindsym XF86MonBrightnessUp exec light -A 5  # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 
+# lockscreen
+bindsym $mod+Shift+b exec swaylock -i ~/.config/sway/wallpaper.jpg
+
 
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
