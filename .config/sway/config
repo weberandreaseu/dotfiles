@@ -230,6 +230,8 @@ font pango:Liberation Medium 10
 for_window [class="^Spotify$"] border none
 for_window [class="^Spotify Premium$"] border none
 
+# suppress firefox sharing indicator
+for_window [title="^Firefox — Sharing Indicator$"] kill
 
 # Autostart
 
