@@ -245,6 +245,8 @@ for_window [title="^Firefox — Sharing Indicator$"] kill
 #
 exec --no-startup-id "QT_QPA_PLATFORM=xcb /opt/enpass/Enpass -minimize"
 
+# notification daemon
+exec mako
 #
 # Status Bar:
 #
