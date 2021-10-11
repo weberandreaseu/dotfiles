@@ -245,6 +245,9 @@ for_window [title="^Firefox — Sharing Indicator$"] kill
 #
 exec --no-startup-id "QT_QPA_PLATFORM=xcb /opt/enpass/Enpass -minimize"
 
+# fix user env problem (required for screensharing), see https://github.com/emersion/xdg-desktop-portal-wlr#running
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
 # notification daemon
 exec mako
 #
