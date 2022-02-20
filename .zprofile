@@ -16,5 +16,6 @@ if [[ -z $DISPLAY && $TTY = /dev/tty1 ]]; then
 
   # general
   export XDG_SESSION_TYPE=wayland
-  exec sway
+  export XDG_CURRENT_DESKTOP=sway
+  exec dbus-run-session sway
 fi
