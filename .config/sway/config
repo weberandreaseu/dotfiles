@@ -81,6 +81,10 @@ bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 # lockscreen
 bindsym $mod+Shift+b exec swaylock -i ~/.config/sway/wallpaper.jpg
 
+# screenshot
+bindsym Print exec grim -t jpeg -g "$(slurp)" /tmp/screenshot-$(date +%Y-%m-%d-%H-%m-%s).jpg
+bindsym Shift+Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot-$(date+%Y-%m-%d-%H-%m-%s).jpg
+
 
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
