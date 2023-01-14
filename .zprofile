@@ -2,7 +2,7 @@
 
 if [[ -z $DISPLAY && $TTY = /dev/tty1 ]]; then
   # this may fix external monitor problem
-  export WLR_DRM_NO_MODIFIERS=1
+  # export WLR_DRM_NO_MODIFIERS=1
 
   # make Firefox use native Wayland backend
   export MOZ_ENABLE_WAYLAND=1
@@ -17,5 +17,5 @@ if [[ -z $DISPLAY && $TTY = /dev/tty1 ]]; then
   # general
   export XDG_SESSION_TYPE=wayland
   export XDG_CURRENT_DESKTOP=sway
-  exec dbus-run-session sway
+  exec sway
 fi
