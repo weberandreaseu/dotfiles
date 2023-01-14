@@ -1,0 +1,8 @@
+export PATH="$HOME/bin:$PATH"
+export EDITOR=vim
+
+# java
+export JDK8=/usr/lib/jvm/java-8-openjdk
+export JDK11=/usr/lib/jvm/java-11-openjdk
+export JDK17=/usr/lib/jvm/java-17-openjdk
+export JAVA_HOME=$JDK11
