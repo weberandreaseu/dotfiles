@@ -1,78 +1,68 @@
-theme = "native"
-icons = "awesome"
-incons_format = " <span font_family='Leberation Mono'>{icon}</span> "
+icons_format = "{icon}"
+
+[theme]
+theme = "srcery"
+[theme.overrides]
+idle_bg = "#323232"
+idle_fg = "#ffffff"
+good_fg = { link = "idle_fg" }
+good_bg = { link = "idle_bg" }
+warning_fg = { link = "idle_fg" }
+warning_bg = { link = "idle_bg" }
+info_bg = { link = "idle_bg"}
+# alternating_tint_bg = { link = "idle_bg"}
+separator =  "  " #"｜"
+separator_fg = { link = "idle_fg" }
+
+[icons]
+icons = "awesome4"
 
 [[block]]
 block = "music"
-# player = "spotify"
-marquee = false
-dynamic_width = true
-max_width = 45
-hide_when_empty = true
-format = "{title}"
-
-[[block]]
-block = "networkmanager"
-on_click = "alacritty -e nmtui"
-interface_name_exclude = ["br\\-[0-9a-f]{12}", "docker\\d+"]
-interface_name_include = []
-device_format = "{icon}{ap}"
-ap_format = "{ssid} {strength}"
-
-[[block]]
-block = "docker"
-interval = 2
-format = "{running}/{total}"
+# format = " $play  $next {$combo.str(max_w:35) |}"
+player = "spotify"
+[block.theme_overrides]
+info_fg = { link = "idle_fg" }
+info_bg = { link = "idle_bg" }
 
 [[block]]
 block = "battery"
-interval = 10
-format = "{percentage}"
+format = " $icon $percentage "
+
+[[block]]
+block = "cpu"
+format = " $icon "
 
 [[block]]
 block = "disk_space"
 path = "/"
-alias = "/"
 info_type = "available"
-unit = "GB"
+alert_unit = "GB"
 interval = 20
 warning = 20.0
 alert = 10.0
+format = " $icon $available.eng(w:2) "
 
 [[block]]
-block = "cpu"
-interval = 1
+block = "docker"
+interval = 2
+format = " $icon { $running/$total |}"
 
 [[block]]
 block = "memory"
-format_mem = "{mem_free;M}"
-format_swap = "{swap_free;M}"
-display_type = "memory"
-icons = true
-clickable = true
-interval = 5
-warning_mem = 80
-warning_swap = 80
-critical_mem = 95
-critical_swap = 95
-
-[[block]]
-block = "load"
-interval = 1
-format = "{1m}"
-
-[[block]]
-block = "keyboard_layout"
-driver = "sway"
-format = "{layout}"
-on_click = "swaymsg input type:keyboard xkb_switch_layout next"
+format = " $icon $mem_total_used_percents.eng(w:2) "
+format_alt = " $icon_swap $swap_used_percents.eng(w:2) "
 
 [[block]]
 block = "sound"
-on_click = "pavucontrol"
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
 
 [[block]]
 block = "time"
 interval = 1
-on_click = "date '+%Y-%m-%d %H:%M' | wl-copy"
-format = "%Y-%m-%d %T"
+format = " $timestamp.datetime(f:'%Y-%m-%d %T') "
+[[block.click]]
+button = "left"
+cmd = "date '+%Y-%m-%d %H:%M' | wl-copy"
