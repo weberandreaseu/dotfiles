@@ -37,7 +37,7 @@ fi
 echo
 echo "--- Load Tests ---"
 
-if zsh -i -c "source .zshrc" 2>/dev/null; then
+if zsh -i -c "source .zshrc; exit 0" 2>/dev/null; then
     pass "Zsh loads without error"
 else
     fail "Zsh failed to load"

@@ -72,6 +72,3 @@ alias l='ls -lah'
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
-
-# Open Code
-export PATH="$HOME/.opencode/bin:$PATH"
