@@ -5,6 +5,7 @@ echo "=== 05: Installing tools ==="
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# fzf - command-line fuzzy finder
 if ! command -v fzf &> /dev/null; then
     FZF_DIR=$(mktemp -d)
     git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
@@ -14,14 +15,17 @@ if ! command -v fzf &> /dev/null; then
     rm -rf "$FZF_DIR"
 fi
 
+# zoxide - smarter cd command that learns your habits
 if ! command -v zoxide &> /dev/null; then
     curl -sS https://webinstall.dev/zoxide | HOME="$HOME" bash
 fi
 
+# opencode - AI coding assistant
 if ! command -v opencode &> /dev/null; then
     curl -fsSL https://opencode.ai/install | bash
 fi
 
+# docker - container platform
 if ! command -v docker &> /dev/null; then
     if [ "$(id -u)" = "0" ]; then
         apt-get install -y docker.io
@@ -32,6 +36,7 @@ if ! command -v docker &> /dev/null; then
     fi
 fi
 
+# code - Visual Studio Code
 if ! command -v code &> /dev/null; then
     if [ "$(id -u)" = "0" ]; then
         apt-get update
@@ -41,6 +46,7 @@ if ! command -v code &> /dev/null; then
     fi
 fi
 
+# JetBrains Toolbox - manage JetBrains IDEs
 if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     TOOLBOX_TMP=$(mktemp -d)
     echo "Fetching latest JetBrains Toolbox version..."
