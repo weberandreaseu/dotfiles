@@ -28,6 +28,15 @@ if ! command -v docker &> /dev/null; then
     fi
 fi
 
+if ! command -v code &> /dev/null; then
+    if [ "$(id -u)" = "0" ]; then
+        apt-get update
+        apt-get install -y code
+    else
+        echo "Skipping VS Code installation (not root)"
+    fi
+fi
+
 if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     TOOLBOX_TMP=$(mktemp -d)
     echo "Fetching latest JetBrains Toolbox version..."
