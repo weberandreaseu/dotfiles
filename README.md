@@ -8,7 +8,6 @@ Managed with [GNU Stow](https://www.gnu.org/software/stow/).
 dotfiles/
 ├── bash/          # bash config
 ├── git/           # git config
-├── oh-my-zsh/     # Oh My Zsh custom plugins
 └── zsh/           # zsh config
 ```
 

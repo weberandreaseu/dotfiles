@@ -5,9 +5,6 @@ DOTFILES_DIR="/tmp/dotfiles"
 HOME_DIR="${HOME:-/home/testuser}"
 
 export HOME="$HOME_DIR"
-export ZSH="$HOME_DIR/.oh-my-zsh"
-
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 export PATH="$HOME_DIR/.local/bin:$PATH"
 mkdir -p "$HOME_DIR/.local/bin"
@@ -20,16 +17,6 @@ if ! command -v fzf &> /dev/null; then
     mkdir -p "$HOME_DIR/.local/bin"
     mv /tmp/fzf/bin/fzf "$HOME_DIR/.local/bin/"
     rm -rf /tmp/fzf
-fi
-
-if [ -d "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-    mkdir -p "$ZSH/custom/plugins"
-    cp -r "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-autosuggestions" "$ZSH/custom/plugins/"
-fi
-
-if [ -d "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-    mkdir -p "$ZSH/custom/plugins"
-    cp -r "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" "$ZSH/custom/plugins/"
 fi
 
 if [ -d "$DOTFILES_DIR" ]; then
