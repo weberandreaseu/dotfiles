@@ -28,4 +28,17 @@ if ! command -v docker &> /dev/null; then
     fi
 fi
 
+if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
+    TOOLBOX_TMP=$(mktemp -d)
+    echo "Fetching latest JetBrains Toolbox version..."
+    TOOLBOX_URL=$(curl -sSL 'https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release' \
+        | grep -oP '"linux":\s*\{"link":\s*"\K[^"]+' | head -1)
+    echo "Downloading JetBrains Toolbox..."
+    curl -sSL "$TOOLBOX_URL" -o "$TOOLBOX_TMP/jetbrains-toolbox.tar.gz"
+    tar -xzf "$TOOLBOX_TMP/jetbrains-toolbox.tar.gz" -C "$HOME/.local/share/JetBrains"
+    chmod +x "$HOME/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
+    rm -rf "$TOOLBOX_TMP"
+    echo "JetBrains Toolbox installed"
+fi
+
 echo "=== 05: Tools installed ==="
