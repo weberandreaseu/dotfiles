@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     gnupg \
     unzip \
+    zip \
     fontconfig \
     build-essential \
     pkg-config \
@@ -52,4 +53,4 @@ RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/
 USER testuser
 WORKDIR /home/testuser
 
-CMD ["zsh"]
+CMD ["/home/testuser/git/dotfiles/test/test-dotfiles.sh"]

@@ -104,6 +104,51 @@ else
 fi
 
 echo
+echo "--- Tools Tests ---"
+
+if [ -f "$HOME/.local/bin/fzf" ]; then
+    pass "fzf installed"
+else
+    fail "fzf not found"
+fi
+
+if [ -f "$HOME/.local/bin/zoxide" ] || ls "$HOME/.local/opt/zoxide-"*/bin/zoxide &>/dev/null; then
+    pass "zoxide installed"
+else
+    fail "zoxide not found"
+fi
+
+if [ -f "$HOME/.opencode/bin/opencode" ]; then
+    pass "opencode installed"
+else
+    fail "opencode not found"
+fi
+
+if command -v docker &> /dev/null || [ -f /usr/bin/docker ]; then
+    pass "docker installed"
+else
+    echo "  (docker requires root to install, skipping)"
+fi
+
+if command -v code &> /dev/null || [ -f /usr/bin/code ]; then
+    pass "VS Code installed"
+else
+    echo "  (VS Code requires root to install, skipping)"
+fi
+
+if [ -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
+    pass "JetBrains Toolbox installed"
+else
+    fail "JetBrains Toolbox not found"
+fi
+
+if [ -d "$HOME/.sdkman" ]; then
+    pass "SDKMAN installed"
+else
+    fail "SDKMAN not found"
+fi
+
+echo
 echo "=== Results ==="
 echo "Passed: $PASSED"
 echo "Failed: $FAILED"
