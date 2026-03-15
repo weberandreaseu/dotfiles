@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# Kubernetes: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Kubernetes repo (not root)"

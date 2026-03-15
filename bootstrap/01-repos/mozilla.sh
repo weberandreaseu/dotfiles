@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# Mozilla Firefox: https://support.mozilla.org/en-US/kb/install-firefox-linux
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Mozilla repo (not root)"

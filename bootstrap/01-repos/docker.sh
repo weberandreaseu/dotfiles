@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# Docker: https://docs.docker.com/engine/install/ubuntu/
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Docker repo (not root)"

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# VS Code: https://code.visualstudio.com/docs/setup/linux
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping VS Code repo (not root)"

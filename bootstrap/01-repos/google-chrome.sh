@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# Google Chrome: https://chromeenterprise.google/browser/download/
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Google Chrome repo (not root)"
