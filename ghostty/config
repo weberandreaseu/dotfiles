@@ -1,0 +1,7 @@
+# Font — use the Nerd Font you installed for p10k
+font-family = MesloLGS NF
+font-size = 13
+
+theme = Catppuccin Mocha
+
+shell-integration = zsh
