@@ -18,6 +18,10 @@ if ! command -v zoxide &> /dev/null; then
     curl -sS https://webinstall.dev/zoxide | HOME="$HOME" bash
 fi
 
+if ! command -v opencode &> /dev/null; then
+    curl -fsSL https://opencode.ai/install | bash
+fi
+
 if ! command -v docker &> /dev/null; then
     if [ "$(id -u)" = "0" ]; then
         apt-get install -y docker.io
