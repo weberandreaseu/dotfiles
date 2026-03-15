@@ -63,4 +63,11 @@ if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     echo "JetBrains Toolbox installed"
 fi
 
+# SDKMAN - Software Development Kit Manager
+if [ -d "$HOME/.sdkman" ]; then
+    echo "SDKMAN already installed"
+else
+    curl -s "https://get.sdkman.io" | bash
+fi
+
 echo "=== 05: Tools installed ==="
