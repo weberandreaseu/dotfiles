@@ -35,3 +35,7 @@ if [ -d "$DOTFILES_DIR" ]; then
 fi
 
 mkdir -p "$HOME_DIR/.config"
+
+if command -v ghostty &> /dev/null; then
+    update-alternatives --set x-terminal-emulator /usr/bin/ghostty
+fi
