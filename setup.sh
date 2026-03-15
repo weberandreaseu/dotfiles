@@ -14,6 +14,14 @@ mkdir -p "$HOME_DIR/.local/bin"
 
 curl -sS https://webinstall.dev/zoxide | HOME="$HOME_DIR" bash
 
+if ! command -v fzf &> /dev/null; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git /tmp/fzf
+    /tmp/fzf/install --bin
+    mkdir -p "$HOME_DIR/.local/bin"
+    mv /tmp/fzf/bin/fzf "$HOME_DIR/.local/bin/"
+    rm -rf /tmp/fzf
+fi
+
 if [ -d "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
     mkdir -p "$ZSH/custom/plugins"
     cp -r "$DOTFILES_DIR/oh-my-zsh/.oh-my-zsh/custom/plugins/zsh-autosuggestions" "$ZSH/custom/plugins/"
