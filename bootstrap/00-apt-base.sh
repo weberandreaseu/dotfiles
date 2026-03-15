@@ -15,6 +15,7 @@ apt-get install -y \
     zsh \
     unzip \
     fontconfig \
+    ca-certificates \
     fonts-powerline \
     build-essential \
     pkg-config \

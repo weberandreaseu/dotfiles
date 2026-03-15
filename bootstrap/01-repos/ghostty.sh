@@ -1,5 +1,5 @@
 #!/bin/bash
-# Ghostty: https://ghostty.org/docs/install
+# Ghostty: https://ghostty.org/docs/install/binary#linux
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Ghostty (not root)"

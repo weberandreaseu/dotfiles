@@ -1,5 +1,5 @@
 #!/bin/bash
-# Enpass: https://www.enpass.io/kb/installation-on-linux/
+# Enpass: https://support.enpass.io/app/getting_started/installing_enpass.htm
 
 if [ "$(id -u)" != "0" ]; then
     echo "Skipping Enpass repo (not root)"
