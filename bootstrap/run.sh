@@ -12,7 +12,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 mkdir -p "$HOME/.local/bin"
 
-for script in 00-apt-base.sh 01-repos.sh 02-fonts.sh 03-shell.sh 04-terminal.sh 05-tools.sh 06-version-managers.sh 07-dotfiles.sh; do
+for script in 00-apt-base.sh 01-repos.sh 02-fonts.sh 03-shell.sh 04-gnome.sh 05-tools.sh 06-version-managers.sh 07-dotfiles.sh; do
     if [ -f "$SCRIPT_DIR/$script" ]; then
         echo ""
         echo "----------------------------------------"

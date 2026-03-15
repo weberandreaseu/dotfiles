@@ -18,16 +18,21 @@ apt-get install -y \
     ca-certificates \
     fonts-powerline \
     build-essential \
-    pkg-config \
-    libx11-dev \
-    libxft-dev \
-    libxcb1-dev \
-    libxcb-randr0-dev \
-    libxcb-util0-dev \
-    libxcb-xkb-dev \
-    libxkbcommon-dev \
-    libxkbcommon-x11-dev \
-    libglib2.0-dev \
-    cmake
+    cmake \
+    nmap \
+    traceroute \
+    wireguard \
+    htop \
+    tree \
+    fdfind \
+    wl-clipboard \
+    yq \
+    bsdutils \
+    diffutils \
+    findutils \
+    grep \
+    gzip \
+    hostname \
+    rename
 
 echo "=== 00: Base packages installed ==="
