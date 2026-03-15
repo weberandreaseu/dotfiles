@@ -1,15 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== 04: Installing Ghostty terminal ==="
-
-if ! command -v ghostty &> /dev/null; then
-    if [ "$(id -u)" = "0" ]; then
-        apt-get install -y ghostty
-    else
-        echo "Skipping ghostty installation (not root, run with sudo to install)"
-    fi
-fi
+echo "=== 04: Configuring Ghostty terminal ==="
 
 mkdir -p "$HOME/.config/ghostty"
 
@@ -24,4 +16,4 @@ shell-integration = zsh
 EOF
 fi
 
-echo "=== 04: Ghostty installed ==="
+echo "=== 04: Ghostty configured ==="
