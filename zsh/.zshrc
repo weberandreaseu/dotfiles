@@ -43,6 +43,13 @@ autoload -Uz compinit && compinit
 # Enables prefix search
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
+# Word navigation with Ctrl + Arrow
+bindkey "^[[1;5C" forward-word    # Ctrl + Right
+bindkey "^[[1;5D" backward-word   # Ctrl + Left
+# Start / end of line with Ctrl + Arrow
+bindkey "^[[1;5H" beginning-of-line  # Ctrl + Home
+bindkey "^[[1;5F" end-of-line        # Ctrl + End
+bindkey "^H" backward-kill-word   # Ctrl + Backspace
 
 # History
 HISTSIZE=5000
