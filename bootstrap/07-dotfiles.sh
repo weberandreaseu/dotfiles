@@ -8,13 +8,9 @@ export PATH="$HOME/.local/bin:$PATH"
 cd "$HOME/git/dotfiles"
 
 rm -f "$HOME/.zshrc"
-rm -f "$HOME/.bashrc"
-rm -f "$HOME/.bash_logout"
-rm -f "$HOME/.profile"
-rm -f "$HOME/.gitconfig"
 rm -f "$HOME/.zshenv"
 
-stow -t "$HOME" -d . bash git zsh ghostty
+stow -t "$HOME" -d . git zsh ghostty
 
 mkdir -p "$HOME/.config"
 

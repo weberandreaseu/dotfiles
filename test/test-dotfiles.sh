@@ -22,12 +22,6 @@ cd "$HOME_DIR"
 
 echo "--- Syntax Tests ---"
 
-if bash -n .bashrc 2>/dev/null; then
-    pass "Bash syntax valid"
-else
-    fail "Bash syntax error"
-fi
-
 if zsh -n .zshrc 2>/dev/null; then
     pass "Zsh syntax valid"
 else

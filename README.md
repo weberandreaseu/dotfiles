@@ -6,7 +6,6 @@ Managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 ```
 dotfiles/
-├── bash/          # bash config
 ├── git/           # git config
 └── zsh/           # zsh config
 ```

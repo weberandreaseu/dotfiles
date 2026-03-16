@@ -22,11 +22,9 @@ fi
 if [ -d "$DOTFILES_DIR" ]; then
     cd "$DOTFILES_DIR"
     rm -f "$HOME_DIR/.zshrc"
-    rm -f "$HOME_DIR/.bashrc"
-    rm -f "$HOME_DIR/.bash_logout"
     rm -f "$HOME_DIR/.profile"
     rm -f "$HOME_DIR/.gitconfig"
-    stow -t "$HOME_DIR" -d . bash git zsh jetbrains
+    stow -t "$HOME_DIR" -d . git zsh jetbrains
 fi
 
 mkdir -p "$HOME_DIR/.config"
