@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     fontconfig \
+    fonts-firacode \
     build-essential \
     pkg-config \
     libx11-dev \
