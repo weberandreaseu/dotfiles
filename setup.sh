@@ -24,10 +24,8 @@ if [ -d "$DOTFILES_DIR" ]; then
     rm -f "$HOME_DIR/.zshrc"
     rm -f "$HOME_DIR/.profile"
     rm -f "$HOME_DIR/.gitconfig"
-    stow -t "$HOME_DIR" -d . git zsh jetbrains
+    stow -t "$HOME_DIR" -d . git zsh jetbrains .config
 fi
-
-mkdir -p "$HOME_DIR/.config"
 
 if command -v ghostty &> /dev/null; then
     update-alternatives --set x-terminal-emulator /usr/bin/ghostty
