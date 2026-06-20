@@ -5,12 +5,30 @@ echo "=== 07: Setting up dotfiles ==="
 
 export PATH="$HOME/.local/bin:$PATH"
 
-cd "$HOME/git/dotfiles"
+DOTFILES_DIR="$HOME/git/dotfiles"
+cd "$DOTFILES_DIR"
 
 rm -f "$HOME/.zshrc"
 rm -f "$HOME/.zshenv"
 
-stow -t "$HOME" -d . git zsh ghostty jetbrains .config
+EXCLUDE_DIRS=".git .opencode bootstrap test bin shell"
+
+for dir in */; do
+    dir="${dir%/}"
+    skip=false
+    for exc in $EXCLUDE_DIRS; do
+        [ "$dir" = "$exc" ] && skip=true && break
+    done
+    if [ "$skip" = false ]; then
+        echo "Stowing $dir..."
+        stow -t "$HOME" -d . "$dir"
+    fi
+done
+
+if [ -d ".config" ]; then
+    echo "Stowing .config..."
+    stow -t "$HOME" -d . .config
+fi
 
 mkdir -p "$HOME/.config"
 
