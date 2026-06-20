@@ -25,6 +25,13 @@ if ! command -v opencode &> /dev/null; then
     curl -fsSL https://opencode.ai/install | bash
 fi
 
+# SDKMAN - Software Development Kit Manager
+if [ -d "$HOME/.sdkman" ]; then
+    echo "SDKMAN already installed"
+else
+    curl -s "https://get.sdkman.io" | bash
+fi
+
 # docker - container platform
 if ! command -v docker &> /dev/null; then
     if [ "$(id -u)" = "0" ]; then
