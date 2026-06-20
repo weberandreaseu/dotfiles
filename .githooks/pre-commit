@@ -1,0 +1,21 @@
+#!/bin/bash
+# Pre-commit hook: lint shell scripts and validate zsh syntax
+ERRORS=0
+
+# ShellCheck if available
+if command -v shellcheck &> /dev/null; then
+    echo "Running ShellCheck..."
+    shellcheck bootstrap/*.sh test/*.sh 2>/dev/null || ERRORS=1
+fi
+
+# Zsh syntax check
+if command -v zsh &> /dev/null; then
+    echo "Checking zsh syntax..."
+    for f in zsh/.zshrc zsh/.zshenv zsh/.alias.zsh; do
+        if [ -f "$f" ]; then
+            zsh -n "$f" || { echo "Syntax error: $f"; ERRORS=1; }
+        fi
+    done
+fi
+
+exit $ERRORS

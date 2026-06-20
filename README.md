@@ -145,6 +145,14 @@ To add a new test:
 2. Keep each test as pass/fail with clear output.
 3. Re-run `./test/test-docker.sh` locally to verify.
 
+## Development
+
+Enable local Git hooks (one-time, opt-in):
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Bootstrap Scripts
 
 | Script | Purpose |
