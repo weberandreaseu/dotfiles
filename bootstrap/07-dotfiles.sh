@@ -10,7 +10,7 @@ cd "$HOME/git/dotfiles"
 rm -f "$HOME/.zshrc"
 rm -f "$HOME/.zshenv"
 
-stow -t "$HOME" -d . git zsh ghostty
+stow -t "$HOME" -d . git zsh ghostty jetbrains .config
 
 mkdir -p "$HOME/.config"
 
