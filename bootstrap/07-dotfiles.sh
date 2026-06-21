@@ -12,7 +12,7 @@ cd "$DOTFILES_DIR"
 rm -f "$HOME/.zshrc"
 rm -f "$HOME/.zshenv"
 
-EXCLUDE_DIRS=".git .opencode bootstrap test bin shell"
+EXCLUDE_DIRS=".git bootstrap test bin shell"
 
 backup_conflicts_for_package() {
     local pkg="$1"

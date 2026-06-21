@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-STOW_EXCLUDE_DIRS := .git .opencode bootstrap test bin shell
+STOW_EXCLUDE_DIRS := .git bootstrap test bin shell
 STOW_PACKAGES := $(filter-out $(STOW_EXCLUDE_DIRS),$(patsubst %/,%,$(wildcard */))) $(if $(wildcard .config),.config)
 
 .PHONY: help install test lint stow unstow
