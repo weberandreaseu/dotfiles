@@ -14,6 +14,39 @@ cd "$DOTFILES_DIR"
 rm -f "$HOME/.zshrc"
 rm -f "$HOME/.zshenv"
 
+rename_home_dir_to_xdg() {
+    local source_dir="$1"
+    local target_dir="$2"
+
+    [ -d "$source_dir" ] || return 0
+
+    if [ ! -e "$target_dir" ]; then
+        mv "$source_dir" "$target_dir"
+        echo "Renamed $source_dir -> $target_dir"
+        return 0
+    fi
+
+    if [ -d "$target_dir" ]; then
+        find "$source_dir" -mindepth 1 -maxdepth 1 -exec mv -n -t "$target_dir" -- {} +
+        if rmdir "$source_dir" 2>/dev/null; then
+            echo "Merged and removed $source_dir -> $target_dir"
+        else
+            echo "Skipped removing $source_dir because conflicting files exist in $target_dir"
+        fi
+    else
+        echo "Skipped $source_dir because target exists and is not a directory: $target_dir"
+    fi
+}
+
+rename_home_dir_to_xdg "$HOME/Desktop" "$HOME/desktop"
+rename_home_dir_to_xdg "$HOME/Downloads" "$HOME/downloads"
+rename_home_dir_to_xdg "$HOME/Templates" "$HOME/templates"
+rename_home_dir_to_xdg "$HOME/Public" "$HOME/public"
+rename_home_dir_to_xdg "$HOME/Documents" "$HOME/documents"
+rename_home_dir_to_xdg "$HOME/Music" "$HOME/music"
+rename_home_dir_to_xdg "$HOME/Pictures" "$HOME/pictures"
+rename_home_dir_to_xdg "$HOME/Videos" "$HOME/videos"
+
 backup_conflicts_for_package() {
     local pkg_root="$1"
     local pkg="$2"
