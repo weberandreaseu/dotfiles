@@ -112,7 +112,7 @@ else
     fail "zoxide not found"
 fi
 
-if [ -f "$HOME/.opencode/bin/opencode" ]; then
+if command -v opencode &> /dev/null; then
     pass "opencode installed"
 else
     fail "opencode not found"
