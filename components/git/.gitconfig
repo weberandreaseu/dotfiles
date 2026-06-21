@@ -3,3 +3,5 @@
 	name = Andreas Weber
 [core]
 	excludesFile = ~/.config/git/ignore
+[push]
+	autoSetupRemote = true
