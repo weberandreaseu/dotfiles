@@ -2,4 +2,4 @@
 	email = info@weberandreas.eu
 	name = Andreas Weber
 [core]
-	excludesFile = ~/.gitignore
+	excludesFile = ~/.config/git/ignore
