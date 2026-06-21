@@ -14,9 +14,9 @@ File structure:
 - `bootstrap/` - numbered installation scripts (00-apt-base, 01-repos, 02-fonts, 03-shell, 04-gnome, 05-tools, 06-version-managers, 07-dotfiles)
 - `test/` test scripts for validation in Docker
 - `bin/` personal scripts (currently empty)
-- `<other>` dotfiles for the corresponding tool
+- `components/` stow packages mirroring `$HOME` structure
 
-Stow package convention: each top-level non-utility directory is a stow package mirroring `$HOME` structure.
+Stow package convention: only directories under `components/` are stow packages.
 
 ## Usage
 
