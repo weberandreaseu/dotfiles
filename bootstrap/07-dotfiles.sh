@@ -58,14 +58,14 @@ for dir in */; do
     if [ "$skip" = false ]; then
         backup_conflicts_for_package "$dir"
         echo "Stowing $dir..."
-        stow -t "$HOME" -d . "$dir"
+        stow --no-folding -t "$HOME" -d . "$dir"
     fi
 done
 
 if [ -d ".config" ]; then
     backup_conflicts_for_package ".config"
     echo "Stowing .config..."
-    stow -t "$HOME" -d . .config
+    stow --no-folding -t "$HOME" -d . .config
 fi
 
 mkdir -p "$HOME/.config"
