@@ -5,6 +5,9 @@ HOME_DIR="/home/testuser"
 PASSED=0
 FAILED=0
 
+# Docker runs this script with a minimal PATH, so include user-local bins.
+export PATH="$HOME_DIR/.local/bin:$HOME_DIR/.opencode/bin:$PATH"
+
 pass() {
     echo "✓ $1"
     ((PASSED++)) || true

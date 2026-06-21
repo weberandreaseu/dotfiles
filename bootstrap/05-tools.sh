@@ -25,6 +25,13 @@ if ! command -v opencode &> /dev/null; then
     curl -fsSL https://opencode.ai/install | bash
 fi
 
+# Some opencode installers place the binary under ~/.opencode/bin only.
+# Link it into ~/.local/bin so it's consistently available on PATH.
+if ! command -v opencode &> /dev/null && [ -x "$HOME/.opencode/bin/opencode" ]; then
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
+fi
+
 # SDKMAN - Software Development Kit Manager
 if [ -d "$HOME/.sdkman" ]; then
     echo "SDKMAN already installed"
