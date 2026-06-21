@@ -21,7 +21,7 @@ mkdir -p ~/git
 cd ~/git
 git clone <your-repo-url> dotfiles
 cd dotfiles
-sudo bash bootstrap/run.sh
+make install
 ```
 
 After bootstrap completes:

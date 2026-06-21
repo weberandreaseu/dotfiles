@@ -24,7 +24,7 @@ apt-get install -y \
     wireguard \
     htop \
     tree \
-    fdfind \
+    fd-find \
     wl-clipboard \
     yq \
     bsdutils \

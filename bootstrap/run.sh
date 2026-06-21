@@ -2,6 +2,22 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+IS_ROOT=0
+
+if [ "$(id -u)" = "0" ]; then
+    IS_ROOT=1
+fi
+
+requires_root() {
+    case "$1" in
+        00-apt-base.sh|01-repos.sh|04-gnome.sh)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
 
 echo "=========================================="
 echo "Dotfiles Bootstrap"
@@ -18,7 +34,17 @@ for script in 00-apt-base.sh 01-repos.sh 02-fonts.sh 03-shell.sh 04-gnome.sh 05-
         echo "----------------------------------------"
         echo "Running $script..."
         echo "----------------------------------------"
-        bash "$SCRIPT_DIR/$script"
+        if requires_root "$script"; then
+            if [ "$IS_ROOT" = "1" ]; then
+                bash "$SCRIPT_DIR/$script"
+            elif command -v sudo > /dev/null 2>&1; then
+                sudo bash "$SCRIPT_DIR/$script"
+            else
+                echo "Skipping $script (requires root and sudo is unavailable)"
+            fi
+        else
+            bash "$SCRIPT_DIR/$script"
+        fi
     fi
 done
 
