@@ -20,10 +20,11 @@ ensure_root() {
 
     require_sudo "$step" || return 1
     echo "$step requires root privileges. Re-running with sudo..."
-    sudo -E bash "$0" "$@" || {
-        echo "ERROR: Failed to run $step with sudo."
-        return 1
-    }
+    sudo -E bash "$0" "$@"
+    local sudo_status=$?
+    if [ "$sudo_status" -ne 0 ]; then
+        return "$sudo_status"
+    fi
     exit 0
 }
 
