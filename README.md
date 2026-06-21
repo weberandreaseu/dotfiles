@@ -26,6 +26,8 @@ cd dotfiles
 make install
 ```
 
+`make install` runs as your normal user and prompts for `sudo` only when a step requires system privileges (for example APT repositories/packages or Ghostty installation).
+
 After bootstrap completes:
 
 ```bash
@@ -145,6 +147,8 @@ Run the Docker-based test suite:
 ```bash
 ./test/test-docker.sh
 ```
+
+Note: Docker tests run as root inside the container and do not exercise interactive `sudo` prompts.
 
 What it validates:
 

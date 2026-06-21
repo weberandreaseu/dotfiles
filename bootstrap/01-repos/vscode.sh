@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 # VS Code: https://code.visualstudio.com/docs/setup/linux
 
-if [ "$(id -u)" != "0" ]; then
-    echo "Skipping VS Code repo (not root)"
-    exit 0
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bootstrap/lib/root.sh
+source "$SCRIPT_DIR/../lib/root.sh"
+ensure_root "VS Code repository setup" "$@"
 
 echo "Configuring VS Code repository..."
 

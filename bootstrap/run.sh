@@ -2,22 +2,10 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IS_ROOT=0
-
-if [ "$(id -u)" = "0" ]; then
-    IS_ROOT=1
-fi
-
-requires_root() {
-    case "$1" in
-        00-apt-base.sh|01-repos.sh|04-gnome.sh)
-            return 0
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
+SCRIPTS=(00-apt-base.sh 01-repos.sh 02-fonts.sh 03-shell.sh 04-gnome.sh 05-tools.sh 06-version-managers.sh 07-dotfiles.sh)
+COMPLETED_SCRIPTS=()
+SKIPPED_SCRIPTS=()
+FAILED_SCRIPT=""
 
 echo "=========================================="
 echo "Dotfiles Bootstrap"
@@ -28,25 +16,51 @@ export PATH="$HOME/.local/bin:$PATH"
 
 mkdir -p "$HOME/.local/bin"
 
-for script in 00-apt-base.sh 01-repos.sh 02-fonts.sh 03-shell.sh 04-gnome.sh 05-tools.sh 06-version-managers.sh 07-dotfiles.sh; do
-    if [ -f "$SCRIPT_DIR/$script" ]; then
-        echo ""
-        echo "----------------------------------------"
-        echo "Running $script..."
-        echo "----------------------------------------"
-        if requires_root "$script"; then
-            if [ "$IS_ROOT" = "1" ]; then
-                bash "$SCRIPT_DIR/$script"
-            elif command -v sudo > /dev/null 2>&1; then
-                sudo bash "$SCRIPT_DIR/$script"
-            else
-                echo "Skipping $script (requires root and sudo is unavailable)"
-            fi
-        else
-            bash "$SCRIPT_DIR/$script"
-        fi
+print_summary() {
+    echo ""
+    echo "=========================================="
+    echo "Bootstrap summary"
+    echo "=========================================="
+    echo "Completed: ${#COMPLETED_SCRIPTS[@]}"
+    for script in "${COMPLETED_SCRIPTS[@]}"; do
+        echo "  - $script"
+    done
+    echo "Skipped: ${#SKIPPED_SCRIPTS[@]}"
+    for script in "${SKIPPED_SCRIPTS[@]}"; do
+        echo "  - $script"
+    done
+    if [ -n "$FAILED_SCRIPT" ]; then
+        echo "Failed: $FAILED_SCRIPT"
+    else
+        echo "Failed: none"
+    fi
+}
+
+trap print_summary EXIT
+
+for script in "${SCRIPTS[@]}"; do
+    if [ ! -f "$SCRIPT_DIR/$script" ]; then
+        SKIPPED_SCRIPTS+=("$script (missing)")
+        continue
+    fi
+
+    echo ""
+    echo "----------------------------------------"
+    echo "Running $script..."
+    echo "----------------------------------------"
+
+    if bash "$SCRIPT_DIR/$script"; then
+        COMPLETED_SCRIPTS+=("$script")
+    else
+        FAILED_SCRIPT="$script"
+        echo "ERROR: $script failed. Aborting bootstrap."
+        break
     fi
 done
+
+if [ -n "$FAILED_SCRIPT" ]; then
+    exit 1
+fi
 
 echo ""
 echo "=========================================="
