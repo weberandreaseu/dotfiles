@@ -3,6 +3,8 @@
 
 Personal dotfiles and system bootstrap for Ubuntu, managed with GNU Stow.
 
+Stow convention: only directories under `components/` are treated as stow packages mirrored into `$HOME`.
+
 ## Prerequisites
 
 - Ubuntu 24.04 or newer
@@ -72,25 +74,28 @@ dotfiles/
 ├── test/            # Docker-based test suite
 ├── bin/             # Personal scripts (PATH-accessible)
 ├── shell/           # Shared shell utilities
-├── git/             # Git config (stow package)
-├── zsh/             # Zsh config (stow package)
-├── ghostty/         # Ghostty terminal config (stow package)
-├── jetbrains/       # JetBrains config (stow package)
-├── .config/         # XDG config files (stow package)
+├── components/      # Stow packages only
+│   ├── git/         # Git config package
+│   ├── zsh/         # Zsh config package
+│   ├── ghostty/     # Ghostty terminal config package
+│   ├── jetbrains/   # JetBrains config package
+│   └── xdg/         # Shared XDG config files package
 ├── Dockerfile       # Test container definition
 ├── Makefile         # Task runner (if created)
 └── setup.sh         # (deprecated, see bootstrap/)
 ```
 
+`bootstrap/07-dotfiles.sh` and `make unstow` use `components/` as the single source of stow packages.
+
 ## Adding New Configs
 
 1. **Create a new package directory:**
    ```bash
-   mkdir -p ~/git/dotfiles/<package-name>
+   mkdir -p ~/git/dotfiles/components/<package-name>
    ```
 2. **Place config files** in the package directory (maintaining the directory structure as they should appear in `$HOME`):
    ```text
-   ~/git/dotfiles/<package-name>/
+   ~/git/dotfiles/components/<package-name>/
    └── .config/
        └── tool/
            └── configfile
@@ -98,30 +103,40 @@ dotfiles/
 3. **Run stow** to create symlinks:
    ```bash
    cd ~/git/dotfiles
-   stow -t ~ -d . <package-name>
+   stow -t ~ -d components <package-name>
    ```
 
 Example (`starship`):
 
 ```bash
 # 1. Create package dir
-mkdir -p ~/git/dotfiles/starship
+mkdir -p ~/git/dotfiles/components/starship
 
 # 2. Move config (maintaining path)
 mkdir -p ~/.config
-mv ~/.config/starship.toml ~/git/dotfiles/starship/.config/
+mv ~/.config/starship.toml ~/git/dotfiles/components/starship/.config/
 
 # 3. Stow it
 cd ~/git/dotfiles
-stow -t ~ -d . starship
+stow -t ~ -d components starship
 ```
 
 ## Removing a Package
 
 ```bash
 cd ~/git/dotfiles
-stow -t ~ -d . -D <package-name>
+stow -t ~ -d components -D <package-name>
 ```
+
+## Migration Plan
+
+If your packages are still at repository top level (for example `git/`, `zsh/`, `.config/`), migrate them:
+
+1. Create `components/` if needed.
+2. Move each stow package into `components/`.
+3. For a legacy top-level `.config/` package, move managed files under `components/xdg/.config/`.
+4. Run `./bootstrap/07-dotfiles.sh` or `make stow`.
+5. Verify links and remove any leftover legacy package directories.
 
 ## Testing
 
@@ -164,4 +179,4 @@ git config core.hooksPath .githooks
 | `04-gnome.sh` | Installs selected GNOME applications. |
 | `05-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
 | `06-version-managers.sh` | Reserved in `run.sh`; currently not present in this repository. |
-| `07-dotfiles.sh` | Stows dotfile packages into `$HOME` and applies final setup. |
+| `07-dotfiles.sh` | Stows packages from `components/` into `$HOME`, then applies final setup. |

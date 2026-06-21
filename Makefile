@@ -1,7 +1,10 @@
 .DEFAULT_GOAL := help
 
-STOW_EXCLUDE_DIRS := .git bootstrap test bin shell
-STOW_PACKAGES := $(filter-out $(STOW_EXCLUDE_DIRS),$(patsubst %/,%,$(wildcard */))) $(if $(wildcard .config),.config)
+COMPONENTS_DIR := components
+STOW_PACKAGES := $(shell \
+	if [ -d "$(COMPONENTS_DIR)" ]; then \
+		find "$(COMPONENTS_DIR)" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort; \
+	fi)
 
 .PHONY: help install test lint stow unstow
 
@@ -22,6 +25,6 @@ stow: ## Stow dotfiles packages
 
 unstow: ## Unstow all dotfiles packages from home directory
 	@for pkg in $(STOW_PACKAGES); do \
-		echo "Unstowing $$pkg..."; \
-		stow -t "$(HOME)" -d . -D "$$pkg"; \
+		echo "Unstowing $$pkg from $(COMPONENTS_DIR)..."; \
+		stow -t "$(HOME)" -d "$(COMPONENTS_DIR)" -D "$$pkg"; \
 	done
