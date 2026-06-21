@@ -5,7 +5,8 @@ echo "=== 07: Setting up dotfiles ==="
 
 export PATH="$HOME/.local/bin:$PATH"
 
-DOTFILES_DIR="$HOME/git/dotfiles"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 COMPONENTS_DIR="$DOTFILES_DIR/components"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 cd "$DOTFILES_DIR"
