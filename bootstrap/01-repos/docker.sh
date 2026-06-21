@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 # Docker: https://docs.docker.com/engine/install/ubuntu/
 
-if [ "$(id -u)" != "0" ]; then
-    echo "Skipping Docker repo (not root)"
-    exit 0
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bootstrap/lib/root.sh
+source "$SCRIPT_DIR/../lib/root.sh"
+ensure_root "Docker repository setup" "$@"
 
 if [ -f /etc/apt/keyrings/docker.asc ] && [ -f /etc/apt/sources.list.d/docker.sources ]; then
     echo "Docker repo already configured"

@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bootstrap/lib/root.sh
+source "$SCRIPT_DIR/lib/root.sh"
+
 echo "=== 05: Installing tools ==="
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -41,23 +45,15 @@ fi
 
 # docker - container platform
 if ! command -v docker &> /dev/null; then
-    if [ "$(id -u)" = "0" ]; then
-        apt-get install -y docker.io
-        systemctl enable docker || true
-        systemctl start docker || true
-    else
-        echo "Skipping docker installation (not root)"
-    fi
+    run_as_root "Docker installation" apt-get install -y docker.io
+    run_as_root "Docker service setup" systemctl enable docker || true
+    run_as_root "Docker service setup" systemctl start docker || true
 fi
 
 # code - Visual Studio Code
 if ! command -v code &> /dev/null; then
-    if [ "$(id -u)" = "0" ]; then
-        apt-get update
-        apt-get install -y code
-    else
-        echo "Skipping VS Code installation (not root)"
-    fi
+    run_as_root "VS Code installation" apt-get update
+    run_as_root "VS Code installation" apt-get install -y code
 fi
 
 # JetBrains Toolbox - manage JetBrains IDEs

@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 # Enpass: https://support.enpass.io/app/getting_started/installing_enpass.htm
 
-if [ "$(id -u)" != "0" ]; then
-    echo "Skipping Enpass repo (not root)"
-    exit 0
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bootstrap/lib/root.sh
+source "$SCRIPT_DIR/../lib/root.sh"
+ensure_root "Enpass repository setup" "$@"
 
 if [ -f /etc/apt/trusted.gpg.d/enpass.asc ] && [ -f /etc/apt/sources.list.d/enpass.list ]; then
     echo "Enpass repo already configured"

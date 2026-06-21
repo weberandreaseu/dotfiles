@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bootstrap/lib/root.sh
+source "$SCRIPT_DIR/lib/root.sh"
+
 echo "=== 02: Installing fonts ==="
 
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Skipping Fira Code (system package - requires sudo)"
-elif command -v apt-get &> /dev/null; then
-    sudo apt-get install -y fonts-firacode
+if command -v apt-get &> /dev/null; then
+    run_as_root "Fira Code system package installation" apt-get install -y fonts-firacode
 fi
 
 FONT_DIR="$HOME/.local/share/fonts"
