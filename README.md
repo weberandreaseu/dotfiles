@@ -71,7 +71,7 @@ exec zsh
 
 ```text
 dotfiles/
-├── bootstrap/       # Numbered install scripts (00-07)
+├── bootstrap/       # Numbered install scripts (00-08)
 │   └── 01-repos/    # Per-app APT repository setup scripts
 ├── test/            # Docker-based test suite
 ├── bin/             # Personal scripts (PATH-accessible)
@@ -182,5 +182,6 @@ git config core.hooksPath .githooks
 | `03-shell.sh` | Sets Zsh as default shell. |
 | `04-gnome.sh` | Installs selected GNOME applications. |
 | `05-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
-| `06-version-managers.sh` | Reserved in `run.sh`; currently not present in this repository. |
+| `06-version-managers.sh` | Installs version managers (currently NVM). |
 | `07-dotfiles.sh` | Stows packages from `components/` into `$HOME`, then applies final setup. |
+| `08-firefox.sh` | Enforces apt-only Firefox: installs apt Firefox, removes Snap Firefox, adds Ubuntu Firefox pin, and cleans duplicate launchers. |
