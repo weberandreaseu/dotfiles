@@ -14,16 +14,22 @@ echo "=== 01: Installing mise via extrepo ==="
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
+apt_update_once "01-mise prerequisite index refresh"
 apt-get install -y extrepo ca-certificates
 
+mise_repo_changed=0
 if grep -Rqs "download.mise.jdx.dev" /etc/apt/sources.list.d 2>/dev/null; then
     echo "mise extrepo source already enabled"
 else
     extrepo enable mise
+    mise_repo_changed=1
 fi
 
-apt-get update
+if [ "$mise_repo_changed" -eq 1 ]; then
+    apt_update_once "01-mise repository index refresh" force
+else
+    apt_update_once "01-mise repository index refresh"
+fi
 apt-get install -y mise
 
 mise --version

@@ -10,7 +10,7 @@ echo "=== 00: Installing base packages ==="
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
+apt_update_once "00-apt-base package index refresh"
 
 apt-get install -y \
     git \

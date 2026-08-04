@@ -91,7 +91,7 @@ echo "=== 05: Installing GNOME apps ==="
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
+apt_update_once "05-gnome package index refresh"
 
 apt-get install -y \
     geary \

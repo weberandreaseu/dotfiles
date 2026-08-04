@@ -14,7 +14,7 @@ fi
 
 echo "Setting up Docker repository..."
 
-apt update
+apt_update_once "Docker prerequisite index refresh"
 apt install -y ca-certificates curl
 
 install -m 0755 -d /etc/apt/keyrings
@@ -29,7 +29,7 @@ Components: stable
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
-apt update
+apt_update_once "Docker repository index refresh" force
 
 apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 

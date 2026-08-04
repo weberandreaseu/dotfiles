@@ -52,7 +52,7 @@ fi
 
 # code - Visual Studio Code
 if ! command -v code &> /dev/null; then
-    run_as_root "VS Code installation" apt-get update
+    apt_update_once "VS Code installation index refresh"
     run_as_root "VS Code installation" apt-get install -y code
 fi
 

@@ -17,7 +17,7 @@ else
     bash "$MOZILLA_REPO_SCRIPT"
 fi
 
-run_as_root "Firefox APT install" apt-get update
+apt_update_once "Firefox APT install index refresh" force
 
 if dpkg -s firefox > /dev/null 2>&1; then
     echo "Firefox package already installed via APT"
@@ -43,8 +43,6 @@ EOF
 
 run_as_root "Firefox APT pinning" install -m 0644 "$TMP_PIN_FILE" "$FIREFOX_PIN_FILE"
 rm -f "$TMP_PIN_FILE"
-
-run_as_root "Firefox APT pinning" apt-get update
 
 if command -v xdg-settings > /dev/null 2>&1; then
     xdg-settings set default-web-browser firefox.desktop || true
