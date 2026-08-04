@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
 
-echo "=== 08: Enforcing apt-only Firefox ==="
+echo "=== 09: Enforcing apt-only Firefox ==="
 
-MOZILLA_REPO_SCRIPT="$SCRIPT_DIR/01-repos/mozilla.sh"
+MOZILLA_REPO_SCRIPT="$SCRIPT_DIR/02-repos/mozilla.sh"
 FIREFOX_PIN_FILE="/etc/apt/preferences.d/no-ubuntu-firefox"
 
 if [ -f /etc/apt/sources.list.d/mozilla.list ] || [ -f /etc/apt/sources.list.d/mozilla.sources ]; then
@@ -57,5 +57,4 @@ if command -v update-desktop-database > /dev/null 2>&1; then
     update-desktop-database "$HOME/.local/share/applications" > /dev/null 2>&1 || true
 fi
 
-echo "=== 08: apt-only Firefox is configured ==="
-
+echo "=== 09: apt-only Firefox is configured ==="

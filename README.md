@@ -71,8 +71,8 @@ exec zsh
 
 ```text
 dotfiles/
-├── bootstrap/       # Numbered install scripts (00-08)
-│   └── 01-repos/    # Per-app APT repository setup scripts
+├── bootstrap/       # Numbered install scripts (00-09)
+│   └── 02-repos/    # Per-app APT repository setup scripts
 ├── test/            # Docker-based test suite
 ├── bin/             # Personal scripts (PATH-accessible)
 ├── shell/           # Shared shell utilities
@@ -87,7 +87,7 @@ dotfiles/
 └── setup.sh         # (deprecated, see bootstrap/)
 ```
 
-`bootstrap/07-dotfiles.sh` and `make unstow` use `components/` as the single source of stow packages.
+`bootstrap/08-dotfiles.sh` and `make unstow` use `components/` as the single source of stow packages.
 
 ## Adding New Configs
 
@@ -137,7 +137,7 @@ If your packages are still at repository top level (for example `git/`, `zsh/`, 
 1. Create `components/` if needed.
 2. Move each stow package into `components/`.
 3. For a legacy top-level `.config/` package, move managed files under `components/xdg/.config/`.
-4. Run `./bootstrap/07-dotfiles.sh` or `make stow`.
+4. Run `./bootstrap/08-dotfiles.sh` or `make stow`.
 5. Verify links and remove any leftover legacy package directories.
 
 ## Testing
@@ -177,11 +177,12 @@ git config core.hooksPath .githooks
 | Script | Purpose |
 |---|---|
 | `00-apt-base.sh` | Installs base APT dependencies (including `git`, `curl`, `stow`, `zsh`). |
-| `01-repos.sh` | Adds third-party APT repositories from `bootstrap/01-repos/*.sh`. |
-| `02-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
-| `03-shell.sh` | Sets Zsh as default shell. |
-| `04-gnome.sh` | Installs selected GNOME applications. |
-| `05-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
-| `06-version-managers.sh` | Installs version managers (currently NVM). |
-| `07-dotfiles.sh` | Stows packages from `components/` into `$HOME`, then applies final setup. |
-| `08-firefox.sh` | Enforces apt-only Firefox: installs apt Firefox, removes Snap Firefox, adds Ubuntu Firefox pin, and cleans duplicate launchers. |
+| `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
+| `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
+| `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
+| `04-shell.sh` | Sets Zsh as default shell. |
+| `05-gnome.sh` | Installs selected GNOME applications. |
+| `06-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
+| `07-version-managers.sh` | Installs version managers (currently NVM). |
+| `08-dotfiles.sh` | Stows packages from `components/` into `$HOME`, then applies final setup. |
+| `09-firefox.sh` | Enforces apt-only Firefox: installs apt Firefox, removes Snap Firefox, adds Ubuntu Firefox pin, and cleans duplicate launchers. |

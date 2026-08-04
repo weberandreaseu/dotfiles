@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== 07: Setting up dotfiles ==="
+echo "=== 08: Setting up dotfiles ==="
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -135,4 +135,4 @@ if command -v ghostty &> /dev/null; then
     fi
 fi
 
-echo "=== 07: Dotfiles installed ==="
+echo "=== 08: Dotfiles installed ==="
