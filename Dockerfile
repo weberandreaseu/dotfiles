@@ -33,7 +33,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -s /bin/zsh testuser \
-    && echo 'testuser:testuser' | chpasswd
+    && echo 'testuser:testuser' | chpasswd \
+    && echo 'testuser ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/testuser \
+    && chmod 0440 /etc/sudoers.d/testuser
 
 COPY . /tmp/dotfiles
 
@@ -46,6 +48,8 @@ RUN touch /var/run/utmp && chown testuser:testuser /var/run/utmp
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/02-fonts.sh"
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/03-shell.sh"
+
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/01-repos.sh"
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/05-tools.sh"
 
