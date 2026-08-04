@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
-ensure_root "04-gnome.sh" "$@"
+ensure_root "05-gnome.sh" "$@"
 
 CUSTOM_SHORTCUTS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-custom-shortcuts.dconf"
 WM_KEYBINDINGS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-wm-keybindings.dconf"
@@ -87,7 +87,7 @@ apply_custom_shortcuts() {
     echo "GNOME keybindings import completed for user: $target_user"
 }
 
-echo "=== 04: Installing GNOME apps ==="
+echo "=== 05: Installing GNOME apps ==="
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -100,4 +100,4 @@ apt-get install -y \
 
 apply_custom_shortcuts
 
-echo "=== 04: GNOME apps installed ==="
+echo "=== 05: GNOME apps installed ==="

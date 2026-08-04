@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== 03: Set zsh as default shell ==="
+echo "=== 04: Set zsh as default shell ==="
 
 if command -v zsh &> /dev/null; then
     target_shell="$(command -v zsh)"
@@ -29,4 +29,4 @@ if command -v zsh &> /dev/null; then
     fi
 fi
 
-echo "=== 03: zsh set as default shell ==="
+echo "=== 04: zsh set as default shell ==="

@@ -18,10 +18,10 @@ test: ## Run Docker-based test suite
 	./test/test-docker.sh
 
 lint: ## Run ShellCheck on project shell scripts
-	shellcheck -x bootstrap/*.sh bootstrap/01-repos/*.sh bootstrap/lib/*.sh test/*.sh
+	shellcheck -x bootstrap/*.sh bootstrap/02-repos/*.sh bootstrap/lib/*.sh test/*.sh
 
 stow: ## Stow dotfiles packages
-	./bootstrap/07-dotfiles.sh
+	./bootstrap/08-dotfiles.sh
 
 unstow: ## Unstow all dotfiles packages from home directory
 	@for pkg in $(STOW_PACKAGES); do \

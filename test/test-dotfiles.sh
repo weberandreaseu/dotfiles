@@ -115,6 +115,12 @@ else
     fail "zoxide not found"
 fi
 
+if command -v mise &> /dev/null; then
+    pass "mise installed"
+else
+    fail "mise not found"
+fi
+
 if command -v opencode &> /dev/null; then
     pass "opencode installed"
 else

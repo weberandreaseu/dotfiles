@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
 
-echo "=== 05: Installing tools ==="
+echo "=== 06: Installing tools ==="
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -73,4 +73,4 @@ if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     echo "JetBrains Toolbox installed"
 fi
 
-echo "=== 05: Tools installed ==="
+echo "=== 06: Tools installed ==="

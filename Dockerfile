@@ -45,15 +45,17 @@ RUN mkdir -p /home/testuser/git && cp -r /tmp/dotfiles /home/testuser/git/dotfil
 
 RUN touch /var/run/utmp && chown testuser:testuser /var/run/utmp
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/02-fonts.sh"
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/01-mise.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/03-shell.sh"
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/03-fonts.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/01-repos.sh"
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/04-shell.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/05-tools.sh"
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/02-repos.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/07-dotfiles.sh"
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/06-tools.sh"
+
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/08-dotfiles.sh"
 
 USER testuser
 WORKDIR /home/testuser
