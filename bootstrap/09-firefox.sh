@@ -10,7 +10,7 @@ echo "=== 09: Enforcing apt-only Firefox ==="
 MOZILLA_REPO_SCRIPT="$SCRIPT_DIR/02-repos/mozilla.sh"
 FIREFOX_PIN_FILE="/etc/apt/preferences.d/no-ubuntu-firefox"
 
-if [ -f /etc/apt/sources.list.d/mozilla.list ] || [ -f /etc/apt/sources.list.d/mozilla.sources ]; then
+if grep -Rqs "packages.mozilla.org/apt" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Mozilla Firefox repository already configured"
 else
     echo "Mozilla Firefox repository missing; configuring it now"

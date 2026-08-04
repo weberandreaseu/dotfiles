@@ -16,6 +16,7 @@ apt-get install -y \
     git \
     curl \
     wget \
+    extrepo \
     stow \
     zsh \
     unzip \

@@ -7,45 +7,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/root.sh"
 ensure_root "Mozilla repository setup" "$@"
 
-if [ -f /etc/apt/sources.list.d/mozilla.list ] || [ -f /etc/apt/sources.list.d/mozilla.sources ]; then
+if grep -Rqs "packages.mozilla.org/apt" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Mozilla repo already configured"
     exit 0
 fi
 
 echo "Adding Mozilla repository..."
 
-install -d -m 0755 /etc/apt/keyrings
-wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
-chmod a+r /etc/apt/keyrings/packages.mozilla.org.asc
-
-if command -v gpg > /dev/null 2>&1; then
-    EXPECTED_FINGERPRINT="35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3"
-    FINGERPRINT="$(gpg --show-keys --with-colons /etc/apt/keyrings/packages.mozilla.org.asc 2>/dev/null | awk -F: '$1=="fpr"{print $10; exit}')"
-    if [ "$FINGERPRINT" != "$EXPECTED_FINGERPRINT" ]; then
-        echo "ERROR: Mozilla key fingerprint mismatch. Expected: 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3, Got: $FINGERPRINT"
-        exit 1
-    fi
-fi
-
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    case "$VERSION_ID" in
-        13|14)
-            cat <<EOF | tee /etc/apt/sources.list.d/mozilla.sources > /dev/null
-Types: deb
-URIs: https://packages.mozilla.org/apt
-Suites: mozilla
-Components: main
-Signed-By: /etc/apt/keyrings/packages.mozilla.org.asc
-EOF
-            ;;
-        *)
-            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | tee /etc/apt/sources.list.d/mozilla.list > /dev/null
-            ;;
-    esac
-else
-    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | tee /etc/apt/sources.list.d/mozilla.list > /dev/null
-fi
+extrepo enable mozilla
 
 echo '
 Package: *
