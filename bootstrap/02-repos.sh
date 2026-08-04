@@ -15,6 +15,6 @@ for script in "$SCRIPT_DIR"/02-repos/*.sh; do
     fi
 done
 
-apt-get update
+apt_update_once "02-repos repository index refresh" force
 
 echo "=== 02: Repositories added ==="
