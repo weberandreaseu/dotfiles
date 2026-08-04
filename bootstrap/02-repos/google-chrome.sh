@@ -14,6 +14,7 @@ fi
 
 echo "Adding Google Chrome repository..."
 
+ensure_extrepo_non_free_policy
 extrepo enable google_chrome
 
 echo "Google Chrome repo added"

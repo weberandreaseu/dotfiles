@@ -69,3 +69,35 @@ apt_update_once() {
         echo "APT package lists are recent. Skipping apt-get update."
     fi
 }
+
+ensure_extrepo_non_free_policy() {
+    local config_file="/etc/extrepo/config.yaml"
+
+    if [ ! -f "$config_file" ]; then
+        echo "ERROR: extrepo config file missing at $config_file"
+        return 1
+    fi
+
+    if grep -Eq '^[[:space:]]*-[[:space:]]*non-free[[:space:]]*$' "$config_file"; then
+        return 0
+    fi
+
+    echo "Enabling extrepo non-free policy..."
+
+    if grep -Eq '^[[:space:]]*#[[:space:]]*-[[:space:]]*non-free[[:space:]]*$' "$config_file"; then
+        sed -i -E 's|^[[:space:]]*#[[:space:]]*-[[:space:]]*non-free[[:space:]]*$|- non-free|' "$config_file"
+        return 0
+    fi
+
+    if grep -Eq '^[[:space:]]*enabled_policies:[[:space:]]*$' "$config_file"; then
+        sed -i '/^[[:space:]]*enabled_policies:[[:space:]]*$/a - non-free' "$config_file"
+        return 0
+    fi
+
+    cat >> "$config_file" <<'EOF'
+
+enabled_policies:
+- main
+- non-free
+EOF
+}

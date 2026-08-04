@@ -14,6 +14,7 @@ if grep -Rqs "packages.microsoft.com/repos/code" /etc/apt/sources.list.d 2>/dev/
     exit 0
 fi
 
+ensure_extrepo_non_free_policy
 extrepo enable vscode
 
 echo "VS Code repo configured"
