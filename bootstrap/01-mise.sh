@@ -15,7 +15,7 @@ echo "=== 01: Installing mise via extrepo ==="
 export DEBIAN_FRONTEND=noninteractive
 
 apt_update_once "01-mise prerequisite index refresh"
-apt-get install -y extrepo ca-certificates
+apt-get install -y ca-certificates
 
 mise_repo_changed=0
 if grep -Rqs "download.mise.jdx.dev" /etc/apt/sources.list.d 2>/dev/null; then

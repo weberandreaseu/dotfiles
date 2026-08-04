@@ -8,6 +8,11 @@ ensure_root "02-repos.sh" "$@"
 
 echo "=== 02: Adding third-party repositories ==="
 
+if ! command -v extrepo > /dev/null 2>&1; then
+    echo "ERROR: extrepo is not installed. Run 00-apt-base.sh first."
+    exit 1
+fi
+
 for script in "$SCRIPT_DIR"/02-repos/*.sh; do
     if [ -f "$script" ] && [ "$(basename "$script")" != "$(basename "$0")" ]; then
         echo "Running $(basename "$script")..."

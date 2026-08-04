@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/root.sh"
 ensure_root "Docker repository setup" "$@"
 
-if [ -f /etc/apt/keyrings/docker.asc ] && [ -f /etc/apt/sources.list.d/docker.sources ]; then
+if grep -Rqs "download.docker.com" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Docker repo already configured"
     exit 0
 fi
@@ -15,22 +15,11 @@ fi
 echo "Setting up Docker repository..."
 
 apt_update_once "Docker prerequisite index refresh"
-apt install -y ca-certificates curl
-
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-chmod a+r /etc/apt/keyrings/docker.asc
-
-tee /etc/apt/sources.list.d/docker.sources <<EOF
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
+apt-get install -y ca-certificates
+extrepo enable docker-ce
 
 apt_update_once "Docker repository index refresh" force
 
-apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 echo "Docker installed successfully"
