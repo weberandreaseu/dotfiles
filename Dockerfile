@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DOTFILES_CONTAINER_TEST=1
 
 RUN apt-get update && apt-get install -y \
     zsh \
