@@ -51,7 +51,12 @@ ZSH_STARTUP_TIMES=""
 zsh -i -c exit >/dev/null 2>&1 || true
 
 for _ in $(seq 1 "$ZSH_STARTUP_RUNS"); do
-    STARTUP_SECONDS=$( { /usr/bin/time -f '%e' zsh -i -c exit >/dev/null; } 2>&1 )
+    if [ -x /usr/bin/time ]; then
+        STARTUP_SECONDS=$( { /usr/bin/time -f '%e' zsh -i -c exit >/dev/null; } 2>&1 )
+    else
+        TIMEFORMAT='%R'
+        STARTUP_SECONDS=$( { time zsh -i -c exit >/dev/null; } 2>&1 )
+    fi
     ZSH_STARTUP_TIMES+="$STARTUP_SECONDS\n"
 done
 
