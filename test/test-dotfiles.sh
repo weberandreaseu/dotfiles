@@ -41,6 +41,35 @@ else
 fi
 
 echo
+echo "--- Startup Performance Tests ---"
+
+ZSH_STARTUP_MAX_SECONDS="${ZSH_STARTUP_MAX_SECONDS:-0.20}"
+ZSH_STARTUP_RUNS="${ZSH_STARTUP_RUNS:-5}"
+ZSH_STARTUP_TIMES=""
+
+# Warm startup cache once (for example compdump/lazy completion state).
+zsh -i -c exit >/dev/null 2>&1 || true
+
+for _ in $(seq 1 "$ZSH_STARTUP_RUNS"); do
+    STARTUP_SECONDS=$( { /usr/bin/time -f '%e' zsh -i -c exit >/dev/null; } 2>&1 )
+    ZSH_STARTUP_TIMES+="$STARTUP_SECONDS\n"
+done
+
+ZSH_STARTUP_MEDIAN=$(printf "%b" "$ZSH_STARTUP_TIMES" | sort -n | awk 'NF {a[++n]=$1} END {if (n == 0) {print "nan"; exit 1} if (n % 2) {printf "%.3f", a[(n+1)/2]} else {printf "%.3f", (a[n/2]+a[n/2+1])/2}}')
+ZSH_STARTUP_AVG=$(printf "%b" "$ZSH_STARTUP_TIMES" | awk 'NF {sum+=$1; n++} END {if (n == 0) {print "nan"; exit 1} printf "%.3f", sum/n}')
+
+echo "  startup runs: $ZSH_STARTUP_RUNS"
+echo "  startup avg: ${ZSH_STARTUP_AVG}s"
+echo "  startup median: ${ZSH_STARTUP_MEDIAN}s"
+echo "  startup threshold: ${ZSH_STARTUP_MAX_SECONDS}s"
+
+if awk -v m="$ZSH_STARTUP_MEDIAN" -v max="$ZSH_STARTUP_MAX_SECONDS" 'BEGIN {exit !(m <= max)}'; then
+    pass "Zsh interactive startup median <= ${ZSH_STARTUP_MAX_SECONDS}s"
+else
+    fail "Zsh interactive startup median too slow (${ZSH_STARTUP_MEDIAN}s > ${ZSH_STARTUP_MAX_SECONDS}s)"
+fi
+
+echo
 echo "--- Alias Tests ---"
 
 ZSH_ALIASES=$(zsh -i -c "alias" 2>/dev/null || echo "")

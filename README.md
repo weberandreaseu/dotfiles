@@ -157,6 +157,12 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools (for example `fzf`, `zoxide`, `opencode`) are installed
+- Zsh interactive startup median stays under regression threshold
+
+Performance threshold knobs for CI/local Docker tests:
+
+- `ZSH_STARTUP_MAX_SECONDS` (default `0.20`)
+- `ZSH_STARTUP_RUNS` (default `5`)
 
 To add a new test:
 
