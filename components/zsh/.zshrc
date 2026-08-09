@@ -9,7 +9,7 @@ fi
 
 source "${HOME}/.alias.zsh"
 
-if [[ -n "${ZSH_EXECUTION_STRING:-}" ]]; then
+if [[ -n "${ZSH_EXECUTION_STRING:-}" && "${ZSH_FORCE_FULL_INIT:-0}" != "1" ]]; then
     if command -v mise >/dev/null 2>&1; then
         eval "$(mise activate zsh)"
     fi
