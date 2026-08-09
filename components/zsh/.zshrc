@@ -3,8 +3,17 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ -o zle ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source "${HOME}/.alias.zsh"
+
+if [[ -n "${ZSH_EXECUTION_STRING:-}" ]]; then
+    if command -v mise >/dev/null 2>&1; then
+        eval "$(mise activate zsh)"
+    fi
+    return
 fi
 
 # Set the directory we want to store zinit and plugins
@@ -18,8 +27,6 @@ fi
 
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
-source "${HOME}/.zshenv"
-source "${HOME}/.alias.zsh"
 
 # Add in Powerlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -36,7 +43,41 @@ zinit snippet OMZL::git.zsh
 zinit snippet OMZP::git
 
 # Load completions
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+ZSH_COMPDUMP_FILE="${ZSH_CACHE_DIR}/.zcompdump"
+
+if ! mkdir -p "$ZSH_CACHE_DIR" >/dev/null 2>&1; then
+    ZSH_COMPDUMP_FILE=""
+fi
+
+_run_compinit() {
+    if [[ -z "$ZSH_COMPDUMP_FILE" ]]; then
+        compinit -C -i
+        return
+    fi
+
+    if [[ -n ${ZSH_COMPDUMP_FILE}(#qN.mh+24) ]]; then
+        compinit -i -d "$ZSH_COMPDUMP_FILE"
+    else
+        compinit -C -i -d "$ZSH_COMPDUMP_FILE"
+    fi
+}
+
+if [[ -o interactive && ! -o zle ]]; then
+    :
+elif [[ "${ZSH_LAZY_COMPINIT:-1}" == "1" ]]; then
+    _lazy_compinit() {
+        zle -D _lazy_compinit
+        bindkey '^I' expand-or-complete
+        _run_compinit
+        zle expand-or-complete
+    }
+    zle -N _lazy_compinit
+    bindkey '^I' _lazy_compinit
+else
+    _run_compinit
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -79,8 +120,3 @@ eval "$(zoxide init --cmd cd zsh)"
 if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh)"
 fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
