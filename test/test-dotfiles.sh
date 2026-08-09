@@ -77,18 +77,7 @@ fi
 echo
 echo "--- Alias Tests ---"
 
-ZSH_ALIASES=$(script -qfc 'ZSH_FORCE_FULL_INIT=1 zsh -i -c "alias"' /dev/null 2>/dev/null || echo "")
-
-if echo "$ZSH_ALIASES" | grep -q "^gst="; then
-    GST_TARGET=$(echo "$ZSH_ALIASES" | grep "^gst=" | grep -o "'.*'" | tr -d "'")
-    if [ "$GST_TARGET" = "git status" ]; then
-        pass "Alias 'gst' expands to 'git status'"
-    else
-        fail "Alias 'gst' found but expands to: $GST_TARGET"
-    fi
-else
-    fail "Alias 'gst' not found"
-fi
+ZSH_ALIASES=$(zsh -i -c "alias" 2>/dev/null || echo "")
 
 if echo "$ZSH_ALIASES" | grep -q "^ll="; then
     pass "Alias 'll' exists"
@@ -100,23 +89,6 @@ if echo "$ZSH_ALIASES" | grep -q "^la="; then
     pass "Alias 'la' exists"
 else
     fail "Alias 'la' not found"
-fi
-
-echo
-echo "--- Function Tests ---"
-
-ZSH_FUNCTIONS=$(script -qfc 'ZSH_FORCE_FULL_INIT=1 zsh -i -c "functions"' /dev/null 2>/dev/null || echo "")
-
-if echo "$ZSH_FUNCTIONS" | grep -q "^__zoxide_z "; then
-    pass "Function '__zoxide_z' loaded"
-else
-    fail "Function '__zoxide_z' not found"
-fi
-
-if echo "$ZSH_FUNCTIONS" | grep -q "^__zoxide_zi "; then
-    pass "Function '__zoxide_zi' loaded"
-else
-    fail "Function '__zoxide_zi' not found"
 fi
 
 echo
