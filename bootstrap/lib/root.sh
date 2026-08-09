@@ -20,7 +20,10 @@ ensure_root() {
 
     require_sudo "$step" || return 1
     echo "$step requires root privileges. Re-running with sudo..."
-    sudo bash "$0" "$@"
+    sudo \
+        DOTFILES_CONTAINER_TEST="${DOTFILES_CONTAINER_TEST:-}" \
+        GITHUB_ACTIONS="${GITHUB_ACTIONS:-}" \
+        bash "$0" "$@"
     local sudo_status=$?
     if [ "$sudo_status" -ne 0 ]; then
         return "$sudo_status"

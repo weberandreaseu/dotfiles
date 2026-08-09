@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DOTFILES_CONTAINER_TEST=1
 
 RUN apt-get update && apt-get install -y \
     zsh \
@@ -52,7 +53,7 @@ RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/04-shell.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/02-repos.sh"
+RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 && /home/testuser/git/dotfiles/bootstrap/02-repos.sh"
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/06-tools.sh"
 

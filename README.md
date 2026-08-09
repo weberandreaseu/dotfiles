@@ -157,12 +157,38 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools (for example `fzf`, `zoxide`, `opencode`) are installed
+- Zsh interactive startup median stays under regression threshold
+
+Performance threshold knobs for CI/local Docker tests:
+
+- `ZSH_STARTUP_MAX_SECONDS` (default `0.20`)
+- `ZSH_STARTUP_RUNS` (default `5`)
 
 To add a new test:
 
 1. Add assertions to `test/test-dotfiles.sh`.
 2. Keep each test as pass/fail with clear output.
 3. Re-run `./test/test-docker.sh` locally to verify.
+
+### Startup Performance
+
+Measure interactive Zsh startup locally:
+
+```bash
+./test/test-zsh-startup.sh --runs 7
+```
+
+Measure pseudo-tty startup (closest to opening a new tab):
+
+```bash
+./test/test-zsh-startup.sh --runs 7 --tty
+```
+
+Include a one-shot `zprof` breakdown:
+
+```bash
+./test/test-zsh-startup.sh --profile
+```
 
 ## Development
 

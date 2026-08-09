@@ -2,6 +2,11 @@
 set -e
 # Docker: https://docs.docker.com/engine/install/ubuntu/
 
+if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ] || [ "${GITHUB_ACTIONS:-}" = "true" ] || [ -f /.dockerenv ] || grep -qaE '(docker|containerd)' /proc/1/cgroup 2>/dev/null; then
+    echo "Container/CI environment detected; skipping Docker repository setup"
+    exit 0
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/../lib/root.sh"
