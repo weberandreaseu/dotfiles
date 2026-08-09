@@ -77,7 +77,7 @@ fi
 echo
 echo "--- Alias Tests ---"
 
-ZSH_ALIASES=$(ZSH_FORCE_FULL_INIT=1 zsh -i -c "alias" 2>/dev/null || echo "")
+ZSH_ALIASES=$(script -qfc 'ZSH_FORCE_FULL_INIT=1 zsh -i -c "alias"' /dev/null 2>/dev/null || echo "")
 
 if echo "$ZSH_ALIASES" | grep -q "^gst="; then
     GST_TARGET=$(echo "$ZSH_ALIASES" | grep "^gst=" | grep -o "'.*'" | tr -d "'")
@@ -105,7 +105,7 @@ fi
 echo
 echo "--- Function Tests ---"
 
-ZSH_FUNCTIONS=$(ZSH_FORCE_FULL_INIT=1 zsh -i -c "functions" 2>/dev/null || echo "")
+ZSH_FUNCTIONS=$(script -qfc 'ZSH_FORCE_FULL_INIT=1 zsh -i -c "functions"' /dev/null 2>/dev/null || echo "")
 
 if echo "$ZSH_FUNCTIONS" | grep -q "^__zoxide_z "; then
     pass "Function '__zoxide_z' loaded"
