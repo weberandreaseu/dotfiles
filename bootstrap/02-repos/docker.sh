@@ -7,6 +7,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/root.sh"
 ensure_root "Docker repository setup" "$@"
 
+if [ -f /.dockerenv ] || grep -qaE '(docker|containerd)' /proc/1/cgroup 2>/dev/null; then
+    echo "Container environment detected; skipping Docker repository setup"
+    exit 0
+fi
+
 if grep -Rqs "download.docker.com" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Docker repo already configured"
     exit 0
