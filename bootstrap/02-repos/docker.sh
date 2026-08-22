@@ -2,8 +2,8 @@
 set -e
 # Docker: https://docs.docker.com/engine/install/ubuntu/
 
-if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ] || [ "${GITHUB_ACTIONS:-}" = "true" ] || [ -f /.dockerenv ] || grep -qaE '(docker|containerd)' /proc/1/cgroup 2>/dev/null; then
-    echo "Container/CI environment detected; skipping Docker repository setup"
+if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+    echo "GitHub Actions environment detected; skipping Docker repository setup"
     exit 0
 fi
 
@@ -23,8 +23,4 @@ apt_update_once "Docker prerequisite index refresh"
 apt-get install -y ca-certificates
 extrepo enable docker-ce
 
-apt_update_once "Docker repository index refresh" force
-
-apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-echo "Docker installed successfully"
+echo "Docker repository configured"

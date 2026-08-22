@@ -11,8 +11,19 @@ login_shell = "/bin/zsh"
 "apt:gnome-calendar" = "latest"
 "apt:gnome-contacts" = "latest"
 "apt:enpass" = "latest"
+"apt:code" = "latest"
+"apt:containerd.io" = "latest"
+"apt:docker-buildx-plugin" = "latest"
+"apt:docker-ce" = "latest"
+"apt:docker-ce-cli" = "latest"
+"apt:docker-compose-plugin" = "latest"
+"apt:firefox" = "latest"
 "apt:google-chrome-stable" = "latest"
 "flatpak:be.alexandervanhee.gradia" = "latest"
+
+[bootstrap.services.docker]
+state = "running"
+enabled = true
 
 [dotfiles]
 "~/.zshrc" = "dotfiles/.zshrc"

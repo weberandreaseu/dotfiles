@@ -73,8 +73,13 @@ backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshrc" "$HOME/.zshrc" "$BA
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshenv" "$HOME/.zshenv" "$BACKUP_DIR/.zshenv"
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/mise/config.toml" "$HOME/.config/mise/config.toml" "$BACKUP_DIR/.config/mise/config.toml"
 
-echo "Applying managed user shell, dotfiles, and system packages with mise..."
-mise bootstrap --yes --only user,dotfiles,packages
+MISE_BOOTSTRAP_PARTS="user,dotfiles,packages,services"
+if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ]; then
+    MISE_BOOTSTRAP_PARTS="user,dotfiles,packages"
+fi
+
+echo "Applying managed user shell, dotfiles, system packages, and services with mise..."
+mise bootstrap --yes --only "$MISE_BOOTSTRAP_PARTS"
 
 echo "Installing tools from the managed global mise config..."
 mise install

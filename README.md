@@ -45,6 +45,7 @@ exec zsh
 - Gradia (latest from Flathub via `mise bootstrap`)
 - Docker
 - VS Code
+- Firefox
 - Google Chrome
 - Enpass
 
@@ -91,7 +92,7 @@ Apply managed configs:
 ```bash
 make dotfiles-apply
 # or
-mise bootstrap --yes --only user,dotfiles,packages
+mise bootstrap --yes --only user,dotfiles,packages,services
 mise install
 ```
 
@@ -213,6 +214,6 @@ git config core.hooksPath .githooks
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
 | `04-shell.sh` | Informational step; login shell setup occurs in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
-| `06-tools.sh` | Installs user tools not managed by `mise` (Docker, VS Code, JetBrains Toolbox). |
+| `06-tools.sh` | Installs JetBrains Toolbox. |
 | `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
 | `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |
