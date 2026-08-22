@@ -6,6 +6,9 @@ dotfiles.default_mode = "symlink"
 node = "latest"
 "npm:codex" = "latest"
 
+[bootstrap.user]
+login_shell = "/bin/zsh"
+
 [dotfiles]
 "~/.zshrc" = "dotfiles/.zshrc"
 "~/.zshenv" = "dotfiles/.zshenv"
