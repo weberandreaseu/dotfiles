@@ -188,6 +188,14 @@ else
     fail "Flatpak desktop-entry paths are missing from XDG_DATA_DIRS"
 fi
 
+GRADIA_LAUNCHER="$HOME/.local/bin/gradia"
+if [ -x "$GRADIA_LAUNCHER" ] \
+    && grep -qx 'exec flatpak run be.alexandervanhee.gradia "$@"' "$GRADIA_LAUNCHER"; then
+    pass "Gradia launcher is available on PATH"
+else
+    fail "Gradia launcher is missing or invalid"
+fi
+
 if ! grep -q '^\[tools\]' "$HOME/git/dotfiles/mise.toml" \
     && grep -q '^\[tools\]' "$HOME/.config/mise/config.toml"; then
     pass "mise tools have one managed global source"
