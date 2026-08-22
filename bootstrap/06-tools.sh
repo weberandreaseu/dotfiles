@@ -7,13 +7,6 @@ source "$SCRIPT_DIR/lib/root.sh"
 
 echo "=== 06: Installing tools ==="
 
-# SDKMAN - Software Development Kit Manager
-if [ -d "$HOME/.sdkman" ]; then
-    echo "SDKMAN already installed"
-else
-    curl -s "https://get.sdkman.io" | bash
-fi
-
 # docker - container platform
 if ! command -v docker &> /dev/null; then
     run_as_root "Docker installation" apt-get install -y docker.io
