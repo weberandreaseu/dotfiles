@@ -43,6 +43,7 @@ exec zsh
 - `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
 - JetBrains Toolbox
 - Claude Code and `opencode` (latest via `mise`)
+- Gradia (latest from Flathub via `mise bootstrap`)
 - Docker
 - VS Code
 

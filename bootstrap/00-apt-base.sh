@@ -14,6 +14,7 @@ apt_update_once "00-apt-base package index refresh"
 
 apt-get install -y \
     git \
+    flatpak \
     curl \
     wget \
     extrepo \
@@ -39,5 +40,7 @@ apt-get install -y \
     gzip \
     hostname \
     rename
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "=== 00: Base packages installed ==="

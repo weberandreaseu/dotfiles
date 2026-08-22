@@ -5,6 +5,9 @@ dotfiles.default_mode = "symlink"
 [bootstrap.user]
 login_shell = "/bin/zsh"
 
+[bootstrap.packages]
+"flatpak:be.alexandervanhee.gradia" = "latest"
+
 [dotfiles]
 "~/.zshrc" = "dotfiles/.zshrc"
 "~/.zshenv" = "dotfiles/.zshenv"

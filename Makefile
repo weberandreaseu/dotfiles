@@ -15,7 +15,7 @@ lint: ## Run ShellCheck on project shell scripts
 	shellcheck -x bootstrap/*.sh bootstrap/02-repos/*.sh bootstrap/lib/*.sh test/*.sh
 
 dotfiles-apply: ## Apply managed dotfiles and install global mise tools
-	mise bootstrap --yes --only user,dotfiles
+	mise bootstrap --yes --only user,dotfiles,packages
 	mise install
 
 dotfiles-status: ## Show managed dotfiles status
