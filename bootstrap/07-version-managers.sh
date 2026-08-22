@@ -10,6 +10,6 @@ else
     exit 1
 fi
 
-echo "Node/npm installation is handled in 08-dotfiles.sh via: mise bootstrap --only dotfiles,tools"
+echo "Node/npm and login shell setup are handled in 08-dotfiles.sh via: mise bootstrap --only user,dotfiles,tools"
 
 echo "=== 07: Version managers installed ==="

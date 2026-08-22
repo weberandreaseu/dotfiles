@@ -91,7 +91,7 @@ Apply managed configs:
 ```bash
 make dotfiles-apply
 # or
-mise bootstrap --yes --only dotfiles,tools
+mise bootstrap --yes --only user,dotfiles,tools
 ```
 
 Check status:
@@ -210,9 +210,9 @@ git config core.hooksPath .githooks
 | `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
 | `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
-| `04-shell.sh` | Sets Zsh as default shell. |
+| `04-shell.sh` | Informational step; login shell is managed by `mise` in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
 | `06-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
 | `07-version-managers.sh` | Legacy placeholder; runtime/tool install is handled by step `08`. |
-| `08-dotfiles.sh` | Runs `mise bootstrap --only dotfiles,tools` and then final setup steps. |
+| `08-dotfiles.sh` | Runs `mise bootstrap --only user,dotfiles,tools` and then final setup steps. |
 | `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |
