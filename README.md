@@ -3,7 +3,7 @@
 
 Personal dotfiles and system bootstrap for Ubuntu, managed with `mise bootstrap`.
 
-This repo uses **explicit `[dotfiles]` source mappings** in `mise.toml` and defaults to `symlink` mode.
+This repo uses **explicit `[dotfiles]` source mappings** in `mise.toml` and defaults to `symlink` mode. Global mise tools have one source of truth in `dotfiles/.config/mise/config.toml`.
 
 ## Prerequisites
 
@@ -39,11 +39,10 @@ exec zsh
 
 - `mise`
 - Node.js + `npm` (latest via `mise`)
-- `fzf`
-- `zoxide`
+- `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
 - `SDKMAN`
 - JetBrains Toolbox
-- `opencode`
+- Claude Code and `opencode` (latest via `mise`)
 - Docker
 - VS Code
 
@@ -91,7 +90,8 @@ Apply managed configs:
 ```bash
 make dotfiles-apply
 # or
-mise bootstrap --yes --only user,dotfiles,tools
+mise bootstrap --yes --only user,dotfiles
+mise install
 ```
 
 Check status:
@@ -113,9 +113,9 @@ mise bootstrap dotfiles unapply --yes
 ## Runtime Management with mise
 
 - Global runtime config is managed at `~/.config/mise/config.toml`.
-- Bootstrap installs latest Node.js and bundled `npm` via `mise bootstrap`.
-- Bootstrap also installs `codex` as an npm-managed tool through `mise`.
-- Re-running bootstrap refreshes Node.js to latest available release.
+- `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` only configures bootstrap and dotfile mappings.
+- Bootstrap links that global config, then uses `mise install` to install latest Node.js, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode`.
+- Re-running bootstrap refreshes these tools to their latest available releases.
 
 ## Adding and Checking In New Config Files
 
@@ -179,7 +179,7 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools are installed
-- `node` and `npm` are installed via `mise`
+- `node`, `npm`, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
@@ -212,7 +212,7 @@ git config core.hooksPath .githooks
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
 | `04-shell.sh` | Informational step; login shell is managed by `mise` in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
-| `06-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
+| `06-tools.sh` | Installs user tools not managed by `mise` (Docker, VS Code, JetBrains Toolbox, SDKMAN). |
 | `07-version-managers.sh` | Legacy placeholder; runtime/tool install is handled by step `08`. |
-| `08-dotfiles.sh` | Runs `mise bootstrap --only user,dotfiles,tools` and then final setup steps. |
+| `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
 | `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |

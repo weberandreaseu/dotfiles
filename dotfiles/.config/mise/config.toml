@@ -1,3 +1,8 @@
 [tools]
 node = "latest"
 "npm:codex" = "latest"
+claude = "latest"
+kubectl = "latest"
+fzf = "latest"
+zoxide = "latest"
+opencode = "latest"

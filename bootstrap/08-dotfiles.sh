@@ -73,8 +73,11 @@ backup_mise_config_conflict() {
 
 backup_mise_config_conflict
 
-echo "Applying managed user shell, dotfiles, and tools with mise..."
-mise bootstrap --yes --only user,dotfiles,tools
+echo "Applying managed user shell and dotfiles with mise..."
+mise bootstrap --yes --only user,dotfiles
+
+echo "Installing tools from the managed global mise config..."
+mise install
 
 mkdir -p "$HOME/.config"
 

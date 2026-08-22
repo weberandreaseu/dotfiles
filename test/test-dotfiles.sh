@@ -5,9 +5,6 @@ HOME_DIR="/home/testuser"
 PASSED=0
 FAILED=0
 
-# Docker runs this script with a minimal PATH, so include user-local bins.
-export PATH="$HOME_DIR/.local/bin:$HOME_DIR/.opencode/bin:$PATH"
-
 pass() {
     echo "✓ $1"
     ((PASSED++)) || true
@@ -109,18 +106,6 @@ fi
 echo
 echo "--- Tools Tests ---"
 
-if [ -f "$HOME/.local/bin/fzf" ]; then
-    pass "fzf installed"
-else
-    fail "fzf not found"
-fi
-
-if [ -f "$HOME/.local/bin/zoxide" ] || ls "$HOME/.local/opt/zoxide-"*/bin/zoxide &>/dev/null; then
-    pass "zoxide installed"
-else
-    fail "zoxide not found"
-fi
-
 if command -v mise &> /dev/null; then
     pass "mise installed"
 else
@@ -147,11 +132,13 @@ else
     fail "npm not found"
 fi
 
-if command -v opencode &> /dev/null; then
-    pass "opencode installed"
-else
-    fail "opencode not found"
-fi
+for tool in claude fzf zoxide opencode kubectl; do
+    if zsh -i -c "command -v $tool >/dev/null && $tool --version >/dev/null" 2>/dev/null; then
+        pass "$tool installed via mise"
+    else
+        fail "$tool not found or not runnable via mise"
+    fi
+done
 
 if command -v docker &> /dev/null || [ -f /usr/bin/docker ]; then
     pass "docker installed"
@@ -179,6 +166,13 @@ fi
 
 echo
 echo "--- Dotfiles State Tests ---"
+
+if ! grep -q '^\[tools\]' "$HOME/git/dotfiles/mise.toml" \
+    && grep -q '^\[tools\]' "$HOME/.config/mise/config.toml"; then
+    pass "mise tools have one managed global source"
+else
+    fail "mise tool configuration is duplicated or missing"
+fi
 
 if (cd "$HOME/git/dotfiles" && mise bootstrap dotfiles status --missing >/dev/null 2>&1); then
     pass "mise dotfiles status clean"
