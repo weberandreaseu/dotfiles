@@ -1,18 +1,17 @@
 # Dotfiles
 <!-- TODO: Add CI badge once GitHub Actions is configured -->
 
-Personal dotfiles and system bootstrap for Ubuntu, managed with GNU Stow.
+Personal dotfiles and system bootstrap for Ubuntu, managed with `mise bootstrap dotfiles`.
 
-Stow convention: only directories under `components/` are treated as stow packages mirrored into `$HOME`.
+This repo uses **explicit `[dotfiles]` source mappings** in `mise.toml` and defaults to `symlink` mode.
 
 ## Prerequisites
 
 - Ubuntu 24.04 or newer
 - `git`
 - `curl`
-- `stow`
 
-`bootstrap/00-apt-base.sh` installs these base dependencies (plus additional system packages) on a fresh machine.
+`bootstrap/00-apt-base.sh` installs the base dependencies on a fresh machine.
 
 ## Quick Start
 
@@ -26,7 +25,7 @@ cd dotfiles
 make install
 ```
 
-`make install` runs as your normal user and prompts for `sudo` only when a step requires system privileges (for example APT repositories/packages or Ghostty installation).
+`make install` runs as your normal user and prompts for `sudo` only when needed.
 
 After bootstrap completes:
 
@@ -38,6 +37,7 @@ exec zsh
 
 ### Tools
 
+- `mise`
 - `fzf`
 - `zoxide`
 - `SDKMAN`
@@ -59,8 +59,8 @@ exec zsh
 
 - Git
 - Ghostty
-- JetBrains
 - OpenCode
+- XDG user-dirs
 
 ### Fonts
 
@@ -76,69 +76,84 @@ dotfiles/
 ├── test/            # Docker-based test suite
 ├── bin/             # Personal scripts (PATH-accessible)
 ├── shell/           # Shared shell utilities
-├── components/      # Stow packages only
-│   ├── git/         # Git config package
-│   ├── zsh/         # Zsh config package
-│   ├── ghostty/     # Ghostty terminal config package
-│   ├── jetbrains/   # JetBrains config package
-│   └── xdg/         # Shared XDG config files package
+├── dotfiles/        # Managed source files for mise dotfiles
+├── mise.toml        # Dotfiles declarations ([dotfiles])
 ├── Dockerfile       # Test container definition
-├── Makefile         # Task runner (if created)
-└── setup.sh         # (deprecated, see bootstrap/)
+└── Makefile         # Task runner
 ```
 
-`bootstrap/08-dotfiles.sh` and `make unstow` use `components/` as the single source of stow packages.
+## Dotfiles Operations
 
-## Adding New Configs
-
-1. **Create a new package directory:**
-   ```bash
-   mkdir -p ~/git/dotfiles/components/<package-name>
-   ```
-2. **Place config files** in the package directory (maintaining the directory structure as they should appear in `$HOME`):
-   ```text
-   ~/git/dotfiles/components/<package-name>/
-   └── .config/
-       └── tool/
-           └── configfile
-   ```
-3. **Run stow** to create symlinks:
-   ```bash
-   cd ~/git/dotfiles
-   stow -t ~ -d components <package-name>
-   ```
-
-Example (`starship`):
+Apply managed configs:
 
 ```bash
-# 1. Create package dir
-mkdir -p ~/git/dotfiles/components/starship
-
-# 2. Move config (maintaining path)
-mkdir -p ~/.config
-mv ~/.config/starship.toml ~/git/dotfiles/components/starship/.config/
-
-# 3. Stow it
-cd ~/git/dotfiles
-stow -t ~ -d components starship
+make dotfiles-apply
+# or
+mise bootstrap dotfiles apply --yes
 ```
 
-## Removing a Package
+Check status:
 
 ```bash
-cd ~/git/dotfiles
-stow -t ~ -d components -D <package-name>
+make dotfiles-status
+# or
+mise bootstrap dotfiles status
 ```
 
-## Migration Plan
+Unapply managed files:
 
-If your packages are still at repository top level (for example `git/`, `zsh/`, `.config/`), migrate them:
+```bash
+make dotfiles-unapply
+# or
+mise bootstrap dotfiles unapply --yes
+```
 
-1. Create `components/` if needed.
-2. Move each stow package into `components/`.
-3. For a legacy top-level `.config/` package, move managed files under `components/xdg/.config/`.
-4. Run `./bootstrap/08-dotfiles.sh` or `make stow`.
-5. Verify links and remove any leftover legacy package directories.
+## Adding and Checking In New Config Files
+
+This repo uses a **capture-first workflow**.
+
+1. Edit or create the live target file in `$HOME`.
+2. Capture/update it in the repo with `mise`.
+3. Review, test, and commit.
+
+Example (`~/.config/starship.toml`):
+
+```bash
+# 1) Edit live file
+$EDITOR ~/.config/starship.toml
+
+# 2) Capture into repo + update mise mapping
+cd ~/git/dotfiles
+mise bootstrap dotfiles add ~/.config/starship.toml
+
+# 3) Verify state
+mise bootstrap dotfiles status
+
+# 4) Check in
+git add mise.toml dotfiles/.config/starship.toml
+git commit -m "Add starship config"
+```
+
+Notes:
+
+- `mise bootstrap dotfiles add` creates a new `[dotfiles]` entry when unmanaged.
+- If the target is already managed, `add` updates the existing source file.
+- If you need to edit the managed source directly, use:
+
+```bash
+mise bootstrap dotfiles edit ~/.zshrc
+```
+
+## Removing Managed Configs
+
+1. Unapply while the entry still exists:
+
+```bash
+mise bootstrap dotfiles unapply --yes
+```
+
+2. Remove the corresponding entry from `mise.toml` and source file from `dotfiles/`.
+3. Commit the removal.
 
 ## Testing
 
@@ -148,15 +163,14 @@ Run the Docker-based test suite:
 ./test/test-docker.sh
 ```
 
-Note: Docker tests run as root inside the container and do not exercise interactive `sudo` prompts.
-
 What it validates:
 
 - Docker image builds from `Dockerfile`
 - Bootstrap scripts run inside the container
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
-- Core tools (for example `fzf`, `zoxide`, `opencode`) are installed
+- Core tools are installed
+- `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
 Performance threshold knobs for CI/local Docker tests:
@@ -170,26 +184,6 @@ To add a new test:
 2. Keep each test as pass/fail with clear output.
 3. Re-run `./test/test-docker.sh` locally to verify.
 
-### Startup Performance
-
-Measure interactive Zsh startup locally:
-
-```bash
-./test/test-zsh-startup.sh --runs 7
-```
-
-Measure pseudo-tty startup (closest to opening a new tab):
-
-```bash
-./test/test-zsh-startup.sh --runs 7 --tty
-```
-
-Include a one-shot `zprof` breakdown:
-
-```bash
-./test/test-zsh-startup.sh --profile
-```
-
 ## Development
 
 Enable local Git hooks (one-time, opt-in):
@@ -202,13 +196,13 @@ git config core.hooksPath .githooks
 
 | Script | Purpose |
 |---|---|
-| `00-apt-base.sh` | Installs base APT dependencies (including `git`, `curl`, `stow`, `zsh`). |
+| `00-apt-base.sh` | Installs base APT dependencies (including `git`, `curl`, `zsh`). |
 | `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
 | `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
 | `04-shell.sh` | Sets Zsh as default shell. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
 | `06-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
-| `07-version-managers.sh` | Installs version managers (currently NVM). |
-| `08-dotfiles.sh` | Stows packages from `components/` into `$HOME`, then applies final setup. |
-| `09-firefox.sh` | Enforces apt-only Firefox: installs apt Firefox, removes Snap Firefox, adds Ubuntu Firefox pin, and cleans duplicate launchers. |
+| `07-version-managers.sh` | Verifies `mise` is available for runtime version management. |
+| `08-dotfiles.sh` | Applies configured dotfiles from `mise.toml`, then runs final setup steps. |
+| `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |

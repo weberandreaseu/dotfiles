@@ -17,7 +17,6 @@ apt-get install -y \
     curl \
     wget \
     extrepo \
-    stow \
     zsh \
     unzip \
     fontconfig \
