@@ -1,15 +1,7 @@
 #!/bin/bash
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=bootstrap/lib/root.sh
-source "$SCRIPT_DIR/lib/root.sh"
-
-echo "=== 03: Installing fonts ==="
-
-if command -v apt-get &> /dev/null; then
-    run_as_root "Fira Code system package installation" apt-get install -y fonts-firacode
-fi
+echo "=== 03: Installing JetBrains Mono Nerd Font ==="
 
 FONT_DIR="$HOME/.local/share/fonts"
 mkdir -p "$FONT_DIR"
@@ -23,4 +15,4 @@ fi
 
 fc-cache -f -v
 
-echo "=== 03: Fonts installed ==="
+echo "=== 03: JetBrains Mono Nerd Font installed ==="

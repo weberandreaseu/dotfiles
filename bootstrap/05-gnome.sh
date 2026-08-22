@@ -87,17 +87,8 @@ apply_custom_shortcuts() {
     echo "GNOME keybindings import completed for user: $target_user"
 }
 
-echo "=== 05: Installing GNOME apps ==="
-
-export DEBIAN_FRONTEND=noninteractive
-
-apt_update_once "05-gnome package index refresh"
-
-apt-get install -y \
-    geary \
-    gnome-calendar \
-    gnome-contacts
+echo "=== 05: Applying GNOME configuration ==="
 
 apply_custom_shortcuts
 
-echo "=== 05: GNOME apps installed ==="
+echo "=== 05: GNOME configuration applied ==="

@@ -6,6 +6,10 @@ dotfiles.default_mode = "symlink"
 login_shell = "/bin/zsh"
 
 [bootstrap.packages]
+"apt:fonts-firacode" = "latest"
+"apt:geary" = "latest"
+"apt:gnome-calendar" = "latest"
+"apt:gnome-contacts" = "latest"
 "flatpak:be.alexandervanhee.gradia" = "latest"
 
 [dotfiles]
