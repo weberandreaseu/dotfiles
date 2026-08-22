@@ -25,14 +25,6 @@ apt-get install -y \
     fonts-powerline \
     build-essential \
     cmake \
-    nmap \
-    traceroute \
-    wireguard \
-    htop \
-    tree \
-    fd-find \
-    wl-clipboard \
-    yq \
     bsdutils \
     diffutils \
     findutils \
