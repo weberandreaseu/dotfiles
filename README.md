@@ -1,7 +1,7 @@
 # Dotfiles
 <!-- TODO: Add CI badge once GitHub Actions is configured -->
 
-Personal dotfiles and system bootstrap for Ubuntu, managed with `mise bootstrap dotfiles`.
+Personal dotfiles and system bootstrap for Ubuntu, managed with `mise bootstrap`.
 
 This repo uses **explicit `[dotfiles]` source mappings** in `mise.toml` and defaults to `symlink` mode.
 
@@ -38,6 +38,7 @@ exec zsh
 ### Tools
 
 - `mise`
+- Node.js + `npm` (latest via `mise`)
 - `fzf`
 - `zoxide`
 - `SDKMAN`
@@ -60,6 +61,7 @@ exec zsh
 - Git
 - Ghostty
 - OpenCode
+- `mise` global config
 - XDG user-dirs
 
 ### Fonts
@@ -89,7 +91,7 @@ Apply managed configs:
 ```bash
 make dotfiles-apply
 # or
-mise bootstrap dotfiles apply --yes
+mise bootstrap --yes --only dotfiles,tools
 ```
 
 Check status:
@@ -107,6 +109,13 @@ make dotfiles-unapply
 # or
 mise bootstrap dotfiles unapply --yes
 ```
+
+## Runtime Management with mise
+
+- Global runtime config is managed at `~/.config/mise/config.toml`.
+- Bootstrap installs latest Node.js and bundled `npm` via `mise bootstrap`.
+- Bootstrap also installs `codex` as an npm-managed tool through `mise`.
+- Re-running bootstrap refreshes Node.js to latest available release.
 
 ## Adding and Checking In New Config Files
 
@@ -170,6 +179,7 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools are installed
+- `node` and `npm` are installed via `mise`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
@@ -203,6 +213,6 @@ git config core.hooksPath .githooks
 | `04-shell.sh` | Sets Zsh as default shell. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
 | `06-tools.sh` | Installs user tools (`fzf`, `zoxide`, `opencode`, Docker, VS Code, JetBrains Toolbox, SDKMAN). |
-| `07-version-managers.sh` | Verifies `mise` is available for runtime version management. |
-| `08-dotfiles.sh` | Applies configured dotfiles from `mise.toml`, then runs final setup steps. |
+| `07-version-managers.sh` | Legacy placeholder; runtime/tool install is handled by step `08`. |
+| `08-dotfiles.sh` | Runs `mise bootstrap --only dotfiles,tools` and then final setup steps. |
 | `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |

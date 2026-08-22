@@ -7,6 +7,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 cd "$DOTFILES_DIR"
 
 rm -f "$HOME/.zshrc"
@@ -50,8 +51,30 @@ if [ ! -f "$DOTFILES_DIR/mise.toml" ]; then
     exit 1
 fi
 
+backup_mise_config_conflict() {
+    local source_path="$DOTFILES_DIR/dotfiles/.config/mise/config.toml"
+    local target_path="$HOME/.config/mise/config.toml"
+
+    [ -e "$target_path" ] || return 0
+
+    if [ -L "$target_path" ]; then
+        local source_real target_real
+        source_real="$(readlink -f "$source_path" 2>/dev/null || true)"
+        target_real="$(readlink -f "$target_path" 2>/dev/null || true)"
+        if [ "$source_real" = "$target_real" ]; then
+            return 0
+        fi
+    fi
+
+    mkdir -p "$BACKUP_DIR/.config/mise"
+    mv "$target_path" "$BACKUP_DIR/.config/mise/config.toml"
+    echo "Backed up existing mise config: $target_path -> $BACKUP_DIR/.config/mise/config.toml"
+}
+
+backup_mise_config_conflict
+
 echo "Applying managed dotfiles with mise..."
-mise bootstrap dotfiles apply --yes
+mise bootstrap --yes --only dotfiles,tools
 
 mkdir -p "$HOME/.config"
 
