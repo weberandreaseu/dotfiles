@@ -1,7 +1,7 @@
 [tools]
 node = "latest"
 java = "temurin"
-"npm:codex" = "latest"
+"npm:@openai/codex" = "latest"
 claude = "latest"
 kubectl = "latest"
 fzf = "latest"
