@@ -173,6 +173,29 @@ fi
 echo
 echo "--- Dotfiles State Tests ---"
 
+if grep -q '^"flatpak:be\.alexandervanhee\.gradia" = "latest"$' "$HOME/git/dotfiles/mise.toml"; then
+    pass "Gradia is managed as a Flatpak application"
+else
+    fail "Gradia Flatpak application is missing"
+fi
+
+FLATPAK_ENV_FILE="$HOME/.config/environment.d/flatpak.conf"
+if [ -f "$FLATPAK_ENV_FILE" ] \
+    && grep -q '/var/lib/flatpak/exports/share' "$FLATPAK_ENV_FILE" \
+    && grep -q '\${HOME}/.local/share/flatpak/exports/share' "$FLATPAK_ENV_FILE"; then
+    pass "Flatpak desktop entries are on XDG_DATA_DIRS"
+else
+    fail "Flatpak desktop-entry paths are missing from XDG_DATA_DIRS"
+fi
+
+GRADIA_LAUNCHER="$HOME/.local/bin/gradia"
+if [ -x "$GRADIA_LAUNCHER" ] \
+    && grep -qx 'exec flatpak run be.alexandervanhee.gradia "$@"' "$GRADIA_LAUNCHER"; then
+    pass "Gradia launcher is available on PATH"
+else
+    fail "Gradia launcher is missing or invalid"
+fi
+
 if ! grep -q '^\[tools\]' "$HOME/git/dotfiles/mise.toml" \
     && grep -q '^\[tools\]' "$HOME/.config/mise/config.toml"; then
     pass "mise tools have one managed global source"
