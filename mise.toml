@@ -2,10 +2,6 @@
 dotfiles.root = "dotfiles"
 dotfiles.default_mode = "symlink"
 
-[tools]
-node = "latest"
-"npm:codex" = "latest"
-
 [bootstrap.user]
 login_shell = "/bin/zsh"
 

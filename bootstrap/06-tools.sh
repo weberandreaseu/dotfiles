@@ -7,35 +7,6 @@ source "$SCRIPT_DIR/lib/root.sh"
 
 echo "=== 06: Installing tools ==="
 
-export PATH="$HOME/.local/bin:$PATH"
-
-# fzf - command-line fuzzy finder
-if ! command -v fzf &> /dev/null; then
-    FZF_DIR=$(mktemp -d)
-    git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
-    "$FZF_DIR/install" --bin
-    mkdir -p "$HOME/.local/bin"
-    mv "$FZF_DIR/bin/fzf" "$HOME/.local/bin/"
-    rm -rf "$FZF_DIR"
-fi
-
-# zoxide - smarter cd command that learns your habits
-if ! command -v zoxide &> /dev/null; then
-    curl -sS https://webinstall.dev/zoxide | HOME="$HOME" bash
-fi
-
-# opencode - AI coding assistant
-if ! command -v opencode &> /dev/null; then
-    curl -fsSL https://opencode.ai/install | bash
-fi
-
-# Some opencode installers place the binary under ~/.opencode/bin only.
-# Link it into ~/.local/bin so it's consistently available on PATH.
-if ! command -v opencode &> /dev/null && [ -x "$HOME/.opencode/bin/opencode" ]; then
-    mkdir -p "$HOME/.local/bin"
-    ln -sf "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
-fi
-
 # SDKMAN - Software Development Kit Manager
 if [ -d "$HOME/.sdkman" ]; then
     echo "SDKMAN already installed"
