@@ -45,6 +45,8 @@ exec zsh
 - Gradia (latest from Flathub via `mise bootstrap`)
 - Docker
 - VS Code
+- Google Chrome
+- Enpass
 
 ### Shell
 

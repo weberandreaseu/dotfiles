@@ -10,6 +10,8 @@ login_shell = "/bin/zsh"
 "apt:geary" = "latest"
 "apt:gnome-calendar" = "latest"
 "apt:gnome-contacts" = "latest"
+"apt:enpass" = "latest"
+"apt:google-chrome-stable" = "latest"
 "flatpak:be.alexandervanhee.gradia" = "latest"
 
 [dotfiles]
