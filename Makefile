@@ -1,12 +1,6 @@
 .DEFAULT_GOAL := help
 
-COMPONENTS_DIR := components
-STOW_PACKAGES := $(shell \
-	if [ -d "$(COMPONENTS_DIR)" ]; then \
-		find "$(COMPONENTS_DIR)" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort; \
-	fi)
-
-.PHONY: help install test lint stow unstow
+.PHONY: help install test lint dotfiles-apply dotfiles-status dotfiles-unapply dotfiles-edit
 
 help: ## Show available targets
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/ {printf "  %-8s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -20,11 +14,15 @@ test: ## Run Docker-based test suite
 lint: ## Run ShellCheck on project shell scripts
 	shellcheck -x bootstrap/*.sh bootstrap/02-repos/*.sh bootstrap/lib/*.sh test/*.sh
 
-stow: ## Stow dotfiles packages
-	./bootstrap/08-dotfiles.sh
+dotfiles-apply: ## Apply managed dotfiles via mise
+	mise bootstrap dotfiles apply --yes
 
-unstow: ## Unstow all dotfiles packages from home directory
-	@for pkg in $(STOW_PACKAGES); do \
-		echo "Unstowing $$pkg from $(COMPONENTS_DIR)..."; \
-		stow -t "$(HOME)" -d "$(COMPONENTS_DIR)" -D "$$pkg"; \
-	done
+dotfiles-status: ## Show managed dotfiles status
+	mise bootstrap dotfiles status
+
+dotfiles-unapply: ## Remove managed dotfiles from home
+	mise bootstrap dotfiles unapply --yes
+
+dotfiles-edit: ## Edit managed source for a target (TARGET=~/.zshrc)
+	@if [ -z "$(TARGET)" ]; then echo "Usage: make dotfiles-edit TARGET=~/.zshrc"; exit 1; fi
+	mise bootstrap dotfiles edit "$(TARGET)"

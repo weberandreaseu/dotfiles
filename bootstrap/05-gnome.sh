@@ -54,10 +54,10 @@ apply_custom_shortcuts() {
         fi
 
         if command -v runuser >/dev/null 2>&1; then
-            if runuser -u "$target_user" -- env \
+            if cat "$dconf_file" | runuser -u "$target_user" -- env \
                 XDG_RUNTIME_DIR="$user_runtime_dir" \
                 DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                dconf load "$dconf_prefix" < "$dconf_file"; then
+                dconf load "$dconf_prefix"; then
                 echo "Applied GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
             else
                 warn "Failed GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
@@ -66,10 +66,10 @@ apply_custom_shortcuts() {
         fi
 
         if command -v sudo >/dev/null 2>&1; then
-            if sudo -u "$target_user" env \
+            if cat "$dconf_file" | sudo -u "$target_user" env \
                 XDG_RUNTIME_DIR="$user_runtime_dir" \
                 DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                dconf load "$dconf_prefix" < "$dconf_file"; then
+                dconf load "$dconf_prefix"; then
                 echo "Applied GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
             else
                 warn "Failed GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"

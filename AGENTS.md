@@ -11,12 +11,13 @@ This projects bootstraps and serves two purposes:
 
 File structure:
 
-- `bootstrap/` - numbered installation scripts (00-apt-base, 01-repos, 02-fonts, 03-shell, 04-gnome, 05-tools, 06-version-managers, 07-dotfiles)
+- `bootstrap/` - numbered installation scripts (00-apt-base, 01-mise, 02-repos, 03-fonts, 04-shell, 05-gnome, 06-tools, 07-version-managers, 08-dotfiles, 09-firefox)
 - `test/` test scripts for validation in Docker
 - `bin/` personal scripts (currently empty)
-- `components/` stow packages mirroring `$HOME` structure
+- `dotfiles/` managed dotfiles sources mirrored into `$HOME` via `mise`
+- `mise.toml` `[dotfiles]` declarations and settings
 
-Stow package convention: only directories under `components/` are stow packages.
+Dotfiles convention: files under `dotfiles/` are managed via explicit `[dotfiles]` mappings in `mise.toml`.
 
 ## Usage
 
@@ -55,7 +56,7 @@ The Docker test runs these validations from `test/test-dotfiles.sh` (around 15 i
 - `VS Code`
 - `JetBrains Toolbox`
 - `SDKMAN`
-- `NVM`
+- `mise`
 
 ## Adding New Tests
 

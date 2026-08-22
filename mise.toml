@@ -1,0 +1,16 @@
+[settings]
+dotfiles.root = "dotfiles"
+dotfiles.default_mode = "symlink"
+
+[dotfiles]
+"~/.zshrc" = "dotfiles/.zshrc"
+"~/.zshenv" = "dotfiles/.zshenv"
+"~/.alias.zsh" = "dotfiles/.alias.zsh"
+"~/.p10k.zsh" = "dotfiles/.p10k.zsh"
+"~/.gitconfig" = "dotfiles/.gitconfig"
+"~/.config/git/ignore" = "dotfiles/.config/git/ignore"
+"~/.config/ghostty/config" = "dotfiles/.config/ghostty/config"
+"~/.config/JetBrains/IntelliJIdea/idea64.vmoptions" = "dotfiles/.config/JetBrains/IntelliJIdea/idea64.vmoptions"
+"~/.config/user-dirs.dirs" = "dotfiles/.config/user-dirs.dirs"
+"~/.config/user-dirs.locale" = "dotfiles/.config/user-dirs.locale"
+"~/.nvm/default-packages" = "dotfiles/.nvm/default-packages"

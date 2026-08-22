@@ -3,9 +3,11 @@ set -e
 
 echo "=== 07: Installing version managers ==="
 
-# NVM - Node Version Manager
-if [ ! -d "$HOME/.nvm" ]; then
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+if command -v mise &> /dev/null; then
+    echo "mise is installed and handles runtime version management"
+else
+    echo "Error: mise not found in PATH"
+    exit 1
 fi
 
 echo "=== 07: Version managers installed ==="

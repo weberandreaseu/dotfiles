@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     extrepo \
-    stow \
     vim \
     sudo \
     ca-certificates \
@@ -56,6 +55,8 @@ RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/
 RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 && /home/testuser/git/dotfiles/bootstrap/02-repos.sh"
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/06-tools.sh"
+
+RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/07-version-managers.sh"
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/08-dotfiles.sh"
 

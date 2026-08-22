@@ -158,6 +158,15 @@ else
 fi
 
 echo
+echo "--- Dotfiles State Tests ---"
+
+if (cd "$HOME/git/dotfiles" && mise bootstrap dotfiles status --missing >/dev/null 2>&1); then
+    pass "mise dotfiles status clean"
+else
+    fail "mise dotfiles status reports drift"
+fi
+
+echo
 echo "=== Results ==="
 echo "Passed: $PASSED"
 echo "Failed: $FAILED"
