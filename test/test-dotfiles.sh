@@ -132,13 +132,19 @@ else
     fail "npm not found"
 fi
 
-for tool in claude fzf zoxide opencode kubectl; do
+for tool in claude fzf zoxide opencode; do
     if zsh -i -c "command -v $tool >/dev/null && $tool --version >/dev/null" 2>/dev/null; then
         pass "$tool installed via mise"
     else
         fail "$tool not found or not runnable via mise"
     fi
 done
+
+if zsh -i -c "command -v kubectl >/dev/null && kubectl version --client >/dev/null" 2>/dev/null; then
+    pass "kubectl installed via mise"
+else
+    fail "kubectl not found or not runnable via mise"
+fi
 
 if command -v docker &> /dev/null || [ -f /usr/bin/docker ]; then
     pass "docker installed"
