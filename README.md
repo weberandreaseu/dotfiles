@@ -42,7 +42,8 @@ exec zsh
 - `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
 - `SDKMAN`
 - JetBrains Toolbox
-- Claude Code, `opencode`, and Gradia (latest via `mise`)
+- Claude Code and `opencode` (latest via `mise`)
+- Gradia (latest from Flathub via `mise bootstrap`)
 - Docker
 - VS Code
 
@@ -113,8 +114,8 @@ mise bootstrap dotfiles unapply --yes
 ## Runtime Management with mise
 
 - Global runtime config is managed at `~/.config/mise/config.toml`.
-- `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` only configures bootstrap and dotfile mappings.
-- Bootstrap links that global config, then uses `mise install` to install latest Node.js, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, `opencode`, and Gradia.
+- `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` configures bootstrap, system packages, and dotfile mappings.
+- Bootstrap links that global config, installs Gradia from Flathub, then uses `mise install` to install latest Node.js, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode`.
 - Re-running bootstrap refreshes these tools to their latest available releases.
 
 ## Adding and Checking In New Config Files
@@ -179,7 +180,7 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools are installed
-- `node`, `npm`, Claude Code, `kubectl`, `fzf`, `zoxide`, `opencode`, and Gradia are installed via `mise`
+- `node`, `npm`, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`; Gradia is installed from Flathub via `mise bootstrap`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
