@@ -1,0 +1,3 @@
+[tools]
+node = "latest"
+"npm:codex" = "latest"

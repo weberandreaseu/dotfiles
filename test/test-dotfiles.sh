@@ -127,6 +127,26 @@ else
     fail "mise not found"
 fi
 
+if zsh -i -c "command -v node >/dev/null && node --version >/dev/null" 2>/dev/null; then
+    if zsh -i -c "node --version" >/dev/null 2>&1; then
+        pass "node installed"
+    else
+        fail "node not runnable"
+    fi
+else
+    fail "node not found"
+fi
+
+if zsh -i -c "command -v npm >/dev/null && npm --version >/dev/null" 2>/dev/null; then
+    if zsh -i -c "npm --version" >/dev/null 2>&1; then
+        pass "npm installed"
+    else
+        fail "npm not runnable"
+    fi
+else
+    fail "npm not found"
+fi
+
 if command -v opencode &> /dev/null; then
     pass "opencode installed"
 else
