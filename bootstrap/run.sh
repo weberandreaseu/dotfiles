@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCRIPTS=(00-apt-base.sh 01-mise.sh 02-repos.sh 03-fonts.sh 04-shell.sh 05-gnome.sh 06-tools.sh 07-version-managers.sh 08-dotfiles.sh 09-firefox.sh)
+SCRIPTS=(00-apt-base.sh 01-mise.sh 02-repos.sh 03-fonts.sh 04-shell.sh 05-gnome.sh 06-tools.sh 08-dotfiles.sh 09-firefox.sh)
 COMPLETED_SCRIPTS=()
 SKIPPED_SCRIPTS=()
 FAILED_SCRIPT=""
