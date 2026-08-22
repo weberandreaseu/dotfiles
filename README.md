@@ -1,5 +1,4 @@
 # Dotfiles
-<!-- TODO: Add CI badge once GitHub Actions is configured -->
 
 Personal dotfiles and system bootstrap for Ubuntu, managed with `mise bootstrap`.
 
@@ -76,8 +75,7 @@ dotfiles/
 ├── bootstrap/       # Numbered install scripts (00-09)
 │   └── 02-repos/    # Per-app APT repository setup scripts
 ├── test/            # Docker-based test suite
-├── bin/             # Personal scripts (PATH-accessible)
-├── shell/           # Shared shell utilities
+├── bin/             # Personal scripts (currently empty)
 ├── dotfiles/        # Managed source files for mise dotfiles
 ├── mise.toml        # Dotfiles declarations ([dotfiles])
 ├── Dockerfile       # Test container definition
@@ -91,7 +89,7 @@ Apply managed configs:
 ```bash
 make dotfiles-apply
 # or
-mise bootstrap --yes --only user,dotfiles
+mise bootstrap --yes --only user,dotfiles,packages
 mise install
 ```
 
@@ -115,8 +113,8 @@ mise bootstrap dotfiles unapply --yes
 
 - Global runtime config is managed at `~/.config/mise/config.toml`.
 - `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` only configures bootstrap and dotfile mappings.
-- Bootstrap links that global config, then uses `mise install` to install latest Node.js, Temurin Java, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode`.
-- Re-running bootstrap refreshes these tools to their latest available releases.
+- Bootstrap links that global config, then uses `mise install` to install any missing configured Node.js (including `npm`), Temurin Java, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` versions.
+- Re-running bootstrap converges missing tools; use a separate mise upgrade workflow when you want to refresh already installed `latest` versions.
 
 ## Adding and Checking In New Config Files
 
@@ -176,10 +174,10 @@ Run the Docker-based test suite:
 What it validates:
 
 - Docker image builds from `Dockerfile`
-- Bootstrap scripts run inside the container
+- Selected bootstrap scripts run inside the container (`01`, `02`, `03`, `04`, `06`, and `08`)
 - Zsh config syntax and load behavior
-- Key aliases/functions are present
-- Core tools are installed
+- Key aliases are present
+- Git identity and core tools are configured
 - `node`, `npm`, Temurin Java, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
@@ -211,7 +209,7 @@ git config core.hooksPath .githooks
 | `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
 | `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
-| `04-shell.sh` | Informational step; login shell is managed by `mise` in step `08`. |
+| `04-shell.sh` | Informational step; login shell setup occurs in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
 | `06-tools.sh` | Installs user tools not managed by `mise` (Docker, VS Code, JetBrains Toolbox). |
 | `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
