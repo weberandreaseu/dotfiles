@@ -17,13 +17,7 @@ else
     bash "$MOZILLA_REPO_SCRIPT"
 fi
 
-apt_update_once "Firefox APT install index refresh" force
-
-if dpkg -s firefox > /dev/null 2>&1; then
-    echo "Firefox package already installed via APT"
-else
-    run_as_root "Firefox APT install" apt-get install -y firefox
-fi
+echo "Firefox APT package is managed by mise"
 
 if command -v snap > /dev/null 2>&1 && snap list firefox > /dev/null 2>&1; then
     echo "Removing Firefox Snap package"

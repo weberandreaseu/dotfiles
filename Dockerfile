@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOTFILES_CONTAINER_TEST=1
@@ -46,17 +46,7 @@ RUN mkdir -p /home/testuser/git && cp -r /tmp/dotfiles /home/testuser/git/dotfil
 
 RUN touch /var/run/utmp && chown testuser:testuser /var/run/utmp
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/01-mise.sh"
-
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/03-fonts.sh"
-
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/04-shell.sh"
-
-RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 && /home/testuser/git/dotfiles/bootstrap/02-repos.sh"
-
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/06-tools.sh"
-
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/08-dotfiles.sh"
+RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 BOOTSTRAP_STEPS=01-mise.sh,02-repos.sh,03-fonts.sh,06-tools.sh,08-dotfiles.sh && /home/testuser/git/dotfiles/bootstrap/run.sh"
 
 USER testuser
 WORKDIR /home/testuser

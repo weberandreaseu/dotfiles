@@ -10,9 +10,6 @@ DOTFILES_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 cd "$DOTFILES_DIR"
 
-rm -f "$HOME/.zshrc"
-rm -f "$HOME/.zshenv"
-
 rename_home_dir_to_xdg() {
     local source_dir="$1"
     local target_dir="$2"
@@ -51,11 +48,12 @@ if [ ! -f "$DOTFILES_DIR/mise.toml" ]; then
     exit 1
 fi
 
-backup_mise_config_conflict() {
-    local source_path="$DOTFILES_DIR/dotfiles/.config/mise/config.toml"
-    local target_path="$HOME/.config/mise/config.toml"
+backup_managed_file_conflict() {
+    local source_path="$1"
+    local target_path="$2"
+    local backup_path="$3"
 
-    [ -e "$target_path" ] || return 0
+    [ -e "$target_path" ] || [ -L "$target_path" ] || return 0
 
     if [ -L "$target_path" ]; then
         local source_real target_real
@@ -66,15 +64,22 @@ backup_mise_config_conflict() {
         fi
     fi
 
-    mkdir -p "$BACKUP_DIR/.config/mise"
-    mv "$target_path" "$BACKUP_DIR/.config/mise/config.toml"
-    echo "Backed up existing mise config: $target_path -> $BACKUP_DIR/.config/mise/config.toml"
+    mkdir -p "$(dirname "$backup_path")"
+    mv "$target_path" "$backup_path"
+    echo "Backed up conflicting managed file: $target_path -> $backup_path"
 }
 
-backup_mise_config_conflict
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshrc" "$HOME/.zshrc" "$BACKUP_DIR/.zshrc"
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshenv" "$HOME/.zshenv" "$BACKUP_DIR/.zshenv"
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/mise/config.toml" "$HOME/.config/mise/config.toml" "$BACKUP_DIR/.config/mise/config.toml"
 
-echo "Applying managed user shell, dotfiles, and system packages with mise..."
-mise bootstrap --yes --only user,dotfiles,packages
+MISE_BOOTSTRAP_PARTS="user,dotfiles,packages,services"
+if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ]; then
+    MISE_BOOTSTRAP_PARTS="user,dotfiles,packages"
+fi
+
+echo "Applying managed user shell, dotfiles, system packages, and services with mise..."
+mise bootstrap --yes --only "$MISE_BOOTSTRAP_PARTS"
 
 echo "Installing tools from the managed global mise config..."
 mise install

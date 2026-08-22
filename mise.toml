@@ -6,7 +6,32 @@ dotfiles.default_mode = "symlink"
 login_shell = "/bin/zsh"
 
 [bootstrap.packages]
+"apt:fd-find" = "latest"
+"apt:fonts-firacode" = "latest"
+"apt:geary" = "latest"
+"apt:gnome-calendar" = "latest"
+"apt:gnome-contacts" = "latest"
+"apt:htop" = "latest"
+"apt:nmap" = "latest"
+"apt:traceroute" = "latest"
+"apt:tree" = "latest"
+"apt:wireguard" = "latest"
+"apt:wl-clipboard" = "latest"
+"apt:yq" = "latest"
+"apt:enpass" = "latest"
+"apt:code" = "latest"
+"apt:containerd.io" = "latest"
+"apt:docker-buildx-plugin" = "latest"
+"apt:docker-ce" = "latest"
+"apt:docker-ce-cli" = "latest"
+"apt:docker-compose-plugin" = "latest"
+"apt:firefox" = "latest"
+"apt:google-chrome-stable" = "latest"
 "flatpak:be.alexandervanhee.gradia" = "latest"
+
+[bootstrap.services.docker]
+state = "running"
+enabled = true
 
 [dotfiles]
 "~/.zshrc" = "dotfiles/.zshrc"

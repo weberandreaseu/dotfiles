@@ -5,13 +5,13 @@ ERRORS=0
 # ShellCheck if available
 if command -v shellcheck &> /dev/null; then
     echo "Running ShellCheck..."
-    shellcheck bootstrap/*.sh test/*.sh 2>/dev/null || ERRORS=1
+    shellcheck -x bootstrap/*.sh bootstrap/02-repos/*.sh bootstrap/lib/*.sh test/*.sh || ERRORS=1
 fi
 
 # Zsh syntax check
 if command -v zsh &> /dev/null; then
     echo "Checking zsh syntax..."
-    for f in zsh/.zshrc zsh/.zshenv zsh/.alias.zsh; do
+    for f in dotfiles/.zshrc dotfiles/.zshenv dotfiles/.alias.zsh dotfiles/.p10k.zsh; do
         if [ -f "$f" ]; then
             zsh -n "$f" || { echo "Syntax error: $f"; ERRORS=1; }
         fi

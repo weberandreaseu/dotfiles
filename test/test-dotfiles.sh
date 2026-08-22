@@ -31,7 +31,7 @@ fi
 echo
 echo "--- Load Tests ---"
 
-if zsh -i -c "source .zshrc; exit 0" 2>/dev/null; then
+if zsh -i -c 'exit 0' 2>/dev/null; then
     pass "Zsh loads without error"
 else
     fail "Zsh failed to load"
@@ -182,7 +182,7 @@ fi
 FLATPAK_ENV_FILE="$HOME/.config/environment.d/flatpak.conf"
 if [ -f "$FLATPAK_ENV_FILE" ] \
     && grep -q '/var/lib/flatpak/exports/share' "$FLATPAK_ENV_FILE" \
-    && grep -q '\${HOME}/.local/share/flatpak/exports/share' "$FLATPAK_ENV_FILE"; then
+    && grep -q "\${HOME}/.local/share/flatpak/exports/share" "$FLATPAK_ENV_FILE"; then
     pass "Flatpak desktop entries are on XDG_DATA_DIRS"
 else
     fail "Flatpak desktop-entry paths are missing from XDG_DATA_DIRS"

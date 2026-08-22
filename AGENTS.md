@@ -2,8 +2,8 @@
 
 ## Overview
 
-This projects bootstraps and serves two purposes:
-1. Bootstrap Ubuntu by installing essentials tools
+This project bootstraps and serves two purposes:
+1. Bootstrap Ubuntu by installing essential tools
 2. Configure dotfiles and development environment
 
 
@@ -11,7 +11,7 @@ This projects bootstraps and serves two purposes:
 
 File structure:
 
-- `bootstrap/` - numbered installation scripts (00-apt-base, 01-mise, 02-repos, 03-fonts, 04-shell, 05-gnome, 06-tools, 08-dotfiles, 09-firefox)
+- `bootstrap/` - numbered installation scripts (00-apt-base, 01-mise, 02-repos, 03-fonts, 05-gnome, 06-tools, 08-dotfiles, 09-firefox)
 - `test/` test scripts for validation in Docker
 - `bin/` personal scripts (currently empty)
 - `dotfiles/` managed dotfiles sources mirrored into `$HOME` via `mise`
@@ -38,21 +38,26 @@ Tests run inside Docker using the project `Dockerfile` and `test/test-docker.sh`
 
 ## Test Scenarios
 
-The Docker test runs these validations from `test/test-dotfiles.sh` (around 15 individual checks):
+The Docker test runs these validations from `test/test-dotfiles.sh`:
 
-1. **Syntax Tests** - Bash and Zsh config files
+1. **Syntax Tests** - Zsh config files
 2. **Load Tests** - Zsh loads without error
-3. **Alias Tests** - common aliases exist
-4. **Function Tests** - required shell functions are loaded
+3. **Startup Performance Tests** - interactive Zsh startup stays under the configured threshold
+4. **Alias Tests** - common aliases exist
 5. **Git Config Tests** - required Git identity/config values are set
 6. **Tools Tests** - expected CLI tools are available
+7. **Dotfiles State Tests** - managed dotfiles and Gradia integration are present
 
 ### Tools Managed
 
 - `fzf`
 - `zoxide`
 - `opencode`
+- Node.js and npm
 - Java (Temurin)
+- Codex
+- Claude Code
+- kubectl
 - `Docker`
 - `VS Code`
 - `JetBrains Toolbox`
