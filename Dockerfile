@@ -56,8 +56,6 @@ RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 && /h
 
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/06-tools.sh"
 
-RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/07-version-managers.sh"
-
 RUN su - testuser -c "export HOME=/home/testuser && /home/testuser/git/dotfiles/bootstrap/08-dotfiles.sh"
 
 USER testuser

@@ -1,5 +1,6 @@
 [tools]
 node = "latest"
+java = "temurin"
 "npm:codex" = "latest"
 claude = "latest"
 kubectl = "latest"

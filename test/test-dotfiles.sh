@@ -132,6 +132,12 @@ else
     fail "npm not found"
 fi
 
+if zsh -i -c "command -v java >/dev/null && java --version >/dev/null" 2>/dev/null; then
+    pass "Temurin Java installed via mise"
+else
+    fail "Temurin Java not found or not runnable via mise"
+fi
+
 for tool in claude fzf zoxide opencode; do
     if zsh -i -c "command -v $tool >/dev/null && $tool --version >/dev/null" 2>/dev/null; then
         pass "$tool installed via mise"
@@ -162,12 +168,6 @@ if [ -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     pass "JetBrains Toolbox installed"
 else
     fail "JetBrains Toolbox not found"
-fi
-
-if [ -d "$HOME/.sdkman" ]; then
-    pass "SDKMAN installed"
-else
-    fail "SDKMAN not found"
 fi
 
 echo

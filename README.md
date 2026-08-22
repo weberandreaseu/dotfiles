@@ -39,8 +39,8 @@ exec zsh
 
 - `mise`
 - Node.js + `npm` (latest via `mise`)
+- Java (latest Temurin GA release via `mise`)
 - `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
-- `SDKMAN`
 - JetBrains Toolbox
 - Claude Code and `opencode` (latest via `mise`)
 - Docker
@@ -114,7 +114,7 @@ mise bootstrap dotfiles unapply --yes
 
 - Global runtime config is managed at `~/.config/mise/config.toml`.
 - `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` only configures bootstrap and dotfile mappings.
-- Bootstrap links that global config, then uses `mise install` to install latest Node.js, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode`.
+- Bootstrap links that global config, then uses `mise install` to install latest Node.js, Temurin Java, bundled `npm`, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode`.
 - Re-running bootstrap refreshes these tools to their latest available releases.
 
 ## Adding and Checking In New Config Files
@@ -179,7 +179,7 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases/functions are present
 - Core tools are installed
-- `node`, `npm`, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`
+- `node`, `npm`, Temurin Java, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
@@ -212,7 +212,6 @@ git config core.hooksPath .githooks
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
 | `04-shell.sh` | Informational step; login shell is managed by `mise` in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
-| `06-tools.sh` | Installs user tools not managed by `mise` (Docker, VS Code, JetBrains Toolbox, SDKMAN). |
-| `07-version-managers.sh` | Legacy placeholder; runtime/tool install is handled by step `08`. |
+| `06-tools.sh` | Installs user tools not managed by `mise` (Docker, VS Code, JetBrains Toolbox). |
 | `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
 | `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |
