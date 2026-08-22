@@ -46,7 +46,7 @@ RUN mkdir -p /home/testuser/git && cp -r /tmp/dotfiles /home/testuser/git/dotfil
 
 RUN touch /var/run/utmp && chown testuser:testuser /var/run/utmp
 
-RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 BOOTSTRAP_STEPS=01-mise.sh,02-repos.sh,03-fonts.sh,04-shell.sh,06-tools.sh,08-dotfiles.sh && /home/testuser/git/dotfiles/bootstrap/run.sh"
+RUN su - testuser -c "export HOME=/home/testuser DOTFILES_CONTAINER_TEST=1 BOOTSTRAP_STEPS=01-mise.sh,02-repos.sh,03-fonts.sh,06-tools.sh,08-dotfiles.sh && /home/testuser/git/dotfiles/bootstrap/run.sh"
 
 USER testuser
 WORKDIR /home/testuser

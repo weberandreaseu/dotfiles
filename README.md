@@ -212,7 +212,6 @@ git config core.hooksPath .githooks
 | `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
 | `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
-| `04-shell.sh` | Informational step; login shell setup occurs in step `08`. |
 | `05-gnome.sh` | Installs selected GNOME applications. |
 | `06-tools.sh` | Installs JetBrains Toolbox. |
 | `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
