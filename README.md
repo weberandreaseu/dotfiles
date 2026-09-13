@@ -71,6 +71,11 @@ exec zsh
 - JetBrains Mono Nerd Font
 - Fira Code
 
+### Wallpaper
+
+- GNOME desktop background, set automatically during bootstrap (`08-dotfiles.sh`)
+- Photo credit and license: `dotfiles/.local/share/backgrounds/wallpaper.jpg.CREDIT`
+
 ## Repository Structure
 
 ```text
