@@ -86,10 +86,14 @@ mise bootstrap --yes --only "$MISE_BOOTSTRAP_PARTS"
 echo "Installing tools from the managed global mise config..."
 mise install
 
-echo "Ensuring Gradia is installed (user-scope Flatpak, no polkit required)..."
-flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-if ! flatpak info --user be.alexandervanhee.gradia >/dev/null 2>&1; then
-    flatpak install --user -y flathub be.alexandervanhee.gradia
+if command -v flatpak >/dev/null 2>&1; then
+    echo "Ensuring Gradia is installed (user-scope Flatpak, no polkit required)..."
+    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    if ! flatpak info --user be.alexandervanhee.gradia >/dev/null 2>&1; then
+        flatpak install --user -y flathub be.alexandervanhee.gradia
+    fi
+else
+    echo "Skipping Gradia install: flatpak is not installed (expected in minimal container test environments)."
 fi
 
 mkdir -p "$HOME/.config"
