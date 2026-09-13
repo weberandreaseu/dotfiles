@@ -27,7 +27,6 @@ login_shell = "/bin/zsh"
 "apt:docker-compose-plugin" = "latest"
 "apt:firefox" = "latest"
 "apt:google-chrome-stable" = "latest"
-"flatpak:be.alexandervanhee.gradia" = "latest"
 
 [bootstrap.services.docker]
 state = "running"
@@ -46,4 +45,5 @@ enabled = true
 "~/.config/JetBrains/IntelliJIdea/idea64.vmoptions" = "dotfiles/.config/JetBrains/IntelliJIdea/idea64.vmoptions"
 "~/.config/user-dirs.dirs" = "dotfiles/.config/user-dirs.dirs"
 "~/.config/user-dirs.locale" = "dotfiles/.config/user-dirs.locale"
+"~/.config/xdg-terminals.list" = "dotfiles/.config/xdg-terminals.list"
 "~/.local/bin/gradia" = "dotfiles/.local/bin/gradia"

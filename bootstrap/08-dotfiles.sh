@@ -72,6 +72,8 @@ backup_managed_file_conflict() {
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshrc" "$HOME/.zshrc" "$BACKUP_DIR/.zshrc"
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshenv" "$HOME/.zshenv" "$BACKUP_DIR/.zshenv"
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/mise/config.toml" "$HOME/.config/mise/config.toml" "$BACKUP_DIR/.config/mise/config.toml"
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/user-dirs.dirs" "$HOME/.config/user-dirs.dirs" "$BACKUP_DIR/.config/user-dirs.dirs"
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/user-dirs.locale" "$HOME/.config/user-dirs.locale" "$BACKUP_DIR/.config/user-dirs.locale"
 
 MISE_BOOTSTRAP_PARTS="user,dotfiles,packages,services"
 if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ]; then
@@ -83,6 +85,16 @@ mise bootstrap --yes --only "$MISE_BOOTSTRAP_PARTS"
 
 echo "Installing tools from the managed global mise config..."
 mise install
+
+if command -v flatpak >/dev/null 2>&1; then
+    echo "Ensuring Gradia is installed (user-scope Flatpak, no polkit required)..."
+    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    if ! flatpak info --user be.alexandervanhee.gradia >/dev/null 2>&1; then
+        flatpak install --user -y flathub be.alexandervanhee.gradia
+    fi
+else
+    echo "Skipping Gradia install: flatpak is not installed (expected in minimal container test environments)."
+fi
 
 mkdir -p "$HOME/.config"
 
