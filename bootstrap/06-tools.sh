@@ -4,7 +4,12 @@ set -e
 echo "=== 06: Installing tools ==="
 
 # JetBrains Toolbox - manage JetBrains IDEs
-if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
+TOOLBOX_DIR="$HOME/.local/share/JetBrains/Toolbox"
+TOOLBOX_BIN="$TOOLBOX_DIR/bin/jetbrains-toolbox"
+TOOLBOX_ICON="$TOOLBOX_DIR/bin/toolbox.svg"
+TOOLBOX_DESKTOP_FILE="$HOME/.local/share/applications/jetbrains-toolbox.desktop"
+
+if [ ! -d "$TOOLBOX_DIR" ]; then
     TOOLBOX_TMP=$(mktemp -d)
     cleanup_toolbox_tmp() {
         rm -rf "$TOOLBOX_TMP"
@@ -29,11 +34,34 @@ if [ ! -d "$HOME/.local/share/JetBrains/Toolbox" ]; then
     fi
 
     mkdir -p "$HOME/.local/share/JetBrains"
-    mv "$TOOLBOX_EXTRACTED" "$HOME/.local/share/JetBrains/Toolbox"
-    chmod +x "$HOME/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
+    mv "$TOOLBOX_EXTRACTED" "$TOOLBOX_DIR"
+    chmod +x "$TOOLBOX_BIN"
     trap - EXIT
     cleanup_toolbox_tmp
     echo "JetBrains Toolbox installed"
+fi
+
+# Toolbox only writes its own ~/.local/share/applications entry on first
+# interactive launch, so bootstrap (which never runs the GUI) leaves it
+# invisible in the app grid. Install a launcher ourselves from the icon/exec
+# the tarball already ships, using absolute paths since Toolbox isn't on PATH.
+if [ -f "$TOOLBOX_BIN" ] && [ ! -f "$TOOLBOX_DESKTOP_FILE" ]; then
+    echo "Adding JetBrains Toolbox launcher to application menu..."
+    mkdir -p "$HOME/.local/share/applications"
+    cat > "$TOOLBOX_DESKTOP_FILE" <<EOF
+[Desktop Entry]
+Type=Application
+Name=JetBrains Toolbox
+Exec=$TOOLBOX_BIN
+Icon=$TOOLBOX_ICON
+StartupNotify=false
+Terminal=false
+Categories=Development;
+EOF
+    if command -v update-desktop-database > /dev/null 2>&1; then
+        update-desktop-database "$HOME/.local/share/applications" > /dev/null 2>&1 || true
+    fi
+    echo "JetBrains Toolbox launcher added"
 fi
 
 echo "=== 06: Tools installed ==="
