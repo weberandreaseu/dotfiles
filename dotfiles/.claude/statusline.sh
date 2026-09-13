@@ -11,6 +11,7 @@ used_pct="$(jq -r '.context_window.used_percentage // empty' <<<"$input")"
 
 reset=$'\033[0m'
 dim=$'\033[2m'
+branch_icon=$'' # nf-dev-git_branch
 
 context_part="${dim}ctx n/a${reset}"
 if [ -n "$used_pct" ]; then
@@ -39,7 +40,7 @@ if [ -n "$cwd" ] && git -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&
         if [ -n "$(git -C "$cwd" status --porcelain 2>/dev/null)" ]; then
             dirty=" *"
         fi
-        branch_part=" ${dim}·${reset} 🌿 ${branch}${dirty}"
+        branch_part=" ${dim}·${reset} ${branch_icon} ${branch}${dirty}"
     fi
 fi
 
