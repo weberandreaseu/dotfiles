@@ -224,7 +224,7 @@ git config core.hooksPath .githooks
 | Script | Purpose |
 |---|---|
 | `00-apt-base.sh` | Installs base APT dependencies (including `git`, `curl`, `zsh`). |
-| `01-mise.sh` | Installs `mise` via `extrepo` and APT. |
+| `01-mise.sh` | Installs `mise` via the official install script (`https://mise.run`). |
 | `02-repos.sh` | Adds third-party APT repositories from `bootstrap/02-repos/*.sh`. |
 | `03-fonts.sh` | Installs Fira Code and JetBrains Mono Nerd Font. |
 | `05-gnome.sh` | Installs selected GNOME applications and the Clipboard Indicator shell extension. |

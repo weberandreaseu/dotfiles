@@ -7,14 +7,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/root.sh"
 ensure_root "VS Code repository setup" "$@"
 
-echo "Configuring VS Code repository..."
-
 if grep -Rqs "packages.microsoft.com/repos/code" /etc/apt/sources.list.d 2>/dev/null; then
     echo "VS Code repo already configured"
     exit 0
 fi
 
-ensure_extrepo_non_free_policy
-extrepo enable vscode
+echo "Configuring VS Code repository..."
+
+apt-get install -y --no-install-recommends ca-certificates curl gnupg
+
+tmp_key="$(mktemp)"
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o "$tmp_key"
+install -D -o root -g root -m 644 "$tmp_key" /usr/share/keyrings/microsoft.gpg
+rm -f "$tmp_key"
+
+tee /etc/apt/sources.list.d/vscode.sources > /dev/null <<EOF
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64,arm64,armhf
+Signed-By: /usr/share/keyrings/microsoft.gpg
+EOF
 
 echo "VS Code repo configured"

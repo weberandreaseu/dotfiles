@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-HOME_DIR="/home/testuser"
+HOME_DIR="$HOME"
+export PATH="$HOME_DIR/.local/bin:$PATH"
 PASSED=0
 FAILED=0
 

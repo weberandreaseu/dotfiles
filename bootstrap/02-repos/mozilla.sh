@@ -14,7 +14,20 @@ fi
 
 echo "Adding Mozilla repository..."
 
-extrepo enable mozilla
+install -d -m 0755 /etc/apt/keyrings
+wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
+chmod a+r /etc/apt/keyrings/packages.mozilla.org.asc
+
+if command -v gpg > /dev/null 2>&1; then
+    EXPECTED_FINGERPRINT="35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3"
+    FINGERPRINT="$(gpg --show-keys --with-colons /etc/apt/keyrings/packages.mozilla.org.asc 2>/dev/null | awk -F: '$1=="fpr"{print $10; exit}')"
+    if [ "$FINGERPRINT" != "$EXPECTED_FINGERPRINT" ]; then
+        echo "ERROR: Mozilla key fingerprint mismatch. Expected: $EXPECTED_FINGERPRINT, Got: $FINGERPRINT"
+        exit 1
+    fi
+fi
+
+echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | tee /etc/apt/sources.list.d/mozilla.list > /dev/null
 
 echo '
 Package: *
