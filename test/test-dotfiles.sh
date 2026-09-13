@@ -173,8 +173,8 @@ fi
 echo
 echo "--- Dotfiles State Tests ---"
 
-if grep -q '^"flatpak:be\.alexandervanhee\.gradia" = "latest"$' "$HOME/git/dotfiles/mise.toml"; then
-    pass "Gradia is managed as a Flatpak application"
+if grep -q 'flatpak install --user -y flathub be\.alexandervanhee\.gradia' "$HOME/git/dotfiles/bootstrap/08-dotfiles.sh"; then
+    pass "Gradia is managed as a user-scope Flatpak application"
 else
     fail "Gradia Flatpak application is missing"
 fi

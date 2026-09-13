@@ -115,8 +115,9 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+# mise must activate first: it puts mise-managed tools like fzf and zoxide on PATH.
 if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh)"
 fi
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
