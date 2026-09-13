@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
 
-echo "=== 09: Enforcing apt-only Firefox ==="
+echo "=== 09: Installing apt-only Firefox ==="
 
 MOZILLA_REPO_SCRIPT="$SCRIPT_DIR/02-repos/mozilla.sh"
 FIREFOX_PIN_FILE="/etc/apt/preferences.d/no-ubuntu-firefox"
@@ -15,17 +15,7 @@ if grep -Rqs "packages.mozilla.org/apt" /etc/apt/sources.list.d 2>/dev/null; the
 else
     echo "Mozilla Firefox repository missing; configuring it now"
     bash "$MOZILLA_REPO_SCRIPT"
-fi
-
-echo "Firefox APT package is managed by mise"
-
-if command -v snap > /dev/null 2>&1 && snap list firefox > /dev/null 2>&1; then
-    echo "Removing Firefox Snap package"
-    if ! run_as_root "Firefox Snap removal" snap remove --purge firefox; then
-        run_as_root "Firefox Snap removal" snap remove firefox
-    fi
-else
-    echo "Firefox Snap package not installed"
+    apt_update_once "09-firefox repository index refresh" force
 fi
 
 TMP_PIN_FILE="$(mktemp)"
@@ -38,6 +28,18 @@ EOF
 run_as_root "Firefox APT pinning" install -m 0644 "$TMP_PIN_FILE" "$FIREFOX_PIN_FILE"
 rm -f "$TMP_PIN_FILE"
 
+echo "Installing Firefox (Mozilla APT package)..."
+run_as_root "Firefox APT install" env DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-downgrades firefox
+
+if command -v snap > /dev/null 2>&1 && snap list firefox > /dev/null 2>&1; then
+    echo "Removing Firefox Snap package"
+    if ! run_as_root "Firefox Snap removal" snap remove --purge firefox; then
+        run_as_root "Firefox Snap removal" snap remove firefox
+    fi
+else
+    echo "Firefox Snap package not installed"
+fi
+
 if command -v xdg-settings > /dev/null 2>&1; then
     xdg-settings set default-web-browser firefox.desktop || true
 fi
@@ -49,4 +51,4 @@ if command -v update-desktop-database > /dev/null 2>&1; then
     update-desktop-database "$HOME/.local/share/applications" > /dev/null 2>&1 || true
 fi
 
-echo "=== 09: apt-only Firefox is configured ==="
+echo "=== 09: apt-only Firefox is installed ==="

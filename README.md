@@ -235,4 +235,4 @@ git config core.hooksPath .githooks
 | `05-gnome.sh` | Installs selected GNOME applications and the Clipboard Indicator shell extension. |
 | `06-tools.sh` | Installs JetBrains Toolbox. |
 | `08-dotfiles.sh` | Applies user/dotfiles bootstrap settings, installs tools from the managed global mise config, and performs final setup. |
-| `09-firefox.sh` | Enforces apt-only Firefox and cleans duplicate launchers. |
+| `09-firefox.sh` | Installs apt-only Firefox (Mozilla repo, pinned against Ubuntu's snap-redirect package) and cleans duplicate launchers. |
