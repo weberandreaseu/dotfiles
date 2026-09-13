@@ -53,6 +53,10 @@ The Docker test runs these validations from `test/test-dotfiles.sh`:
 - `fzf`
 - `zoxide`
 - `opencode`
+- `jq`
+- `yq`
+- `fd`
+- `ripgrep`
 - Node.js and npm
 - Java (Temurin)
 - Codex
