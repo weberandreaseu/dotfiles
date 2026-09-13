@@ -72,6 +72,7 @@ backup_managed_file_conflict() {
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshrc" "$HOME/.zshrc" "$BACKUP_DIR/.zshrc"
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.zshenv" "$HOME/.zshenv" "$BACKUP_DIR/.zshenv"
 backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.config/mise/config.toml" "$HOME/.config/mise/config.toml" "$BACKUP_DIR/.config/mise/config.toml"
+backup_managed_file_conflict "$DOTFILES_DIR/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json" "$BACKUP_DIR/.claude/settings.json"
 
 MISE_BOOTSTRAP_PARTS="user,dotfiles,packages,services"
 if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ]; then
