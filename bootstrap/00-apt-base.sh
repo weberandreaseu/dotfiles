@@ -17,7 +17,7 @@ apt-get install -y \
     flatpak \
     curl \
     wget \
-    extrepo \
+    gnupg \
     zsh \
     unzip \
     fontconfig \

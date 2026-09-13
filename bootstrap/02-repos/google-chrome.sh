@@ -14,7 +14,8 @@ fi
 
 echo "Adding Google Chrome repository..."
 
-ensure_extrepo_non_free_policy
-extrepo enable google_chrome
+install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
 
 echo "Google Chrome repo added"

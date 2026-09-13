@@ -1,37 +1,21 @@
 #!/bin/bash
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=bootstrap/lib/root.sh
-source "$SCRIPT_DIR/lib/root.sh"
-ensure_root "01-mise.sh" "$@"
+echo "=== 01: Installing mise ==="
 
 if [ "$(id -u)" -eq 0 ]; then
-    export HOME="/root"
+    echo "ERROR: 01-mise.sh must be run as your normal user, not root."
+    echo "mise installs into that user's \$HOME; re-run without sudo."
+    exit 1
 fi
 
-echo "=== 01: Installing mise via extrepo ==="
-
-export DEBIAN_FRONTEND=noninteractive
-
-apt_update_once "01-mise prerequisite index refresh"
-apt-get install -y ca-certificates
-
-mise_repo_changed=0
-if grep -Rqs "download.mise.jdx.dev" /etc/apt/sources.list.d 2>/dev/null; then
-    echo "mise extrepo source already enabled"
+if command -v mise > /dev/null 2>&1; then
+    echo "mise already installed: $(mise --version)"
 else
-    extrepo enable mise
-    mise_repo_changed=1
+    curl -fsSL https://mise.run | sh
 fi
 
-if [ "$mise_repo_changed" -eq 1 ]; then
-    apt_update_once "01-mise repository index refresh" force
-else
-    apt_update_once "01-mise repository index refresh"
-fi
-apt-get install -y mise
-
+export PATH="$HOME/.local/bin:$PATH"
 mise --version
 
 echo "=== 01: mise installed ==="
