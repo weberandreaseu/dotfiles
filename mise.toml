@@ -23,7 +23,6 @@ login_shell = "/bin/zsh"
 "apt:docker-ce" = "latest"
 "apt:docker-ce-cli" = "latest"
 "apt:docker-compose-plugin" = "latest"
-"apt:firefox" = "latest"
 "apt:google-chrome-stable" = "latest"
 
 [bootstrap.services.docker]
