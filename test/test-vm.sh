@@ -2,7 +2,20 @@
 set -euo pipefail
 
 VM_NAME="${VM_NAME:-ubuntu25.10}"
-SNAPSHOT_NAME="${SNAPSHOT_NAME:-ssh-setup}"
+OPEN_CONSOLE="${OPEN_CONSOLE:-1}"
+
+# Reset strategy: virtiofs does not support snapshot-revert with memory state
+# (virtiofsd's backend state cannot be restored - see 2026-09-13 investigation).
+# Instead, BASE_DISK is a frozen, never-written-to golden image (SSH key +
+# passwordless sudo + virtiofs fstab entry already baked in, bootstrap not
+# run). Every test run discards RUN_DISK and recreates it fresh as a qcow2
+# overlay on top of BASE_DISK, then cold-boots from it. This guarantees a
+# clean guest state on every run without ever touching BASE_DISK or any
+# libvirt snapshot.
+IMAGES_DIR="${IMAGES_DIR:-/var/lib/libvirt/images}"
+BASE_DISK="${BASE_DISK:-$IMAGES_DIR/${VM_NAME}.golden-run2}"
+RUN_DISK="${RUN_DISK:-$IMAGES_DIR/${VM_NAME}.run-active}"
+RUN_DISK_OWNER="${RUN_DISK_OWNER:-libvirt-qemu:kvm}"
 SSH_USER="${SSH_USER:-andreas}"
 SSH_HOST="${SSH_HOST:-}"
 MOUNT_PATH="${MOUNT_PATH:-/mnt/dotfiles}"
@@ -126,7 +139,7 @@ ln -sfn "$MOUNT_PATH" "$HOME/git/dotfiles"
 cd "$HOME/git/dotfiles"
 
 if [ "$RUN_BOOTSTRAP" = "1" ]; then
-  sudo ./bootstrap/run.sh
+  ./bootstrap/run.sh
 fi
 
 if [ "$RUN_GUEST_TESTS" = "1" ]; then
@@ -135,15 +148,31 @@ fi
 EOF
 }
 
+reset_run_disk() {
+  [ -f "$BASE_DISK" ] || fail "Golden base disk not found: $BASE_DISK"
+
+  local current_disk
+  current_disk="$(virsh domblklist "$VM_NAME" 2>/dev/null | awk '$1=="vda" {print $2}')"
+  if [ "$current_disk" != "$RUN_DISK" ]; then
+    fail "VM '$VM_NAME' vda is '$current_disk', expected '$RUN_DISK'. Refusing to guess; check domain XML."
+  fi
+
+  log "Discarding previous run overlay and recreating from golden base"
+  sudo rm -f "$RUN_DISK"
+  sudo qemu-img create -q -f qcow2 -F qcow2 -b "$BASE_DISK" "$RUN_DISK"
+  sudo chown "$RUN_DISK_OWNER" "$RUN_DISK"
+  sudo chmod 600 "$RUN_DISK"
+}
+
 main() {
   require_cmd virsh
   require_cmd ssh
   require_cmd awk
   require_cmd cut
+  require_cmd qemu-img
+  require_cmd sudo
 
   virsh dominfo "$VM_NAME" >/dev/null 2>&1 || fail "VM not found: $VM_NAME"
-  virsh snapshot-info --domain "$VM_NAME" "$SNAPSHOT_NAME" >/dev/null 2>&1 \
-    || fail "Snapshot '$SNAPSHOT_NAME' not found for VM '$VM_NAME'"
 
   local state
   state="$(vm_state || true)"
@@ -154,15 +183,16 @@ main() {
       || fail "Timed out waiting for VM to shut down"
   fi
 
-  log "Reverting snapshot '$SNAPSHOT_NAME'"
-  virsh snapshot-revert "$VM_NAME" "$SNAPSHOT_NAME" --force >/dev/null
+  reset_run_disk
 
-  state="$(vm_state || true)"
-  if [ "$state" = "running" ]; then
-    log "VM '$VM_NAME' already running after snapshot revert"
-  else
-    log "Starting VM '$VM_NAME'"
-    virsh start "$VM_NAME" >/dev/null
+  log "Starting VM '$VM_NAME' (cold boot from clean overlay)"
+  virsh start "$VM_NAME" >/dev/null
+
+  if [ "$OPEN_CONSOLE" = "1" ]; then
+    log "Opening virt-manager console"
+    nohup virt-manager --connect qemu:///system --show-domain-console "$VM_NAME" \
+      >/dev/null 2>&1 &
+    disown
   fi
 
   local host="$SSH_HOST"

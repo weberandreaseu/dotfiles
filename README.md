@@ -42,7 +42,7 @@ exec zsh
 - `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
 - JetBrains Toolbox
 - Claude Code and `opencode` (latest via `mise`)
-- Gradia (latest from Flathub via `mise bootstrap`)
+- Gradia (latest from Flathub, user-scope install during bootstrap)
 - Docker
 - VS Code
 - Firefox
@@ -195,6 +195,21 @@ To add a new test:
 1. Add assertions to `test/test-dotfiles.sh`.
 2. Keep each test as pass/fail with clear output.
 3. Re-run `./test/test-docker.sh` locally to verify.
+
+### VM Testing
+
+Docker can't validate GNOME desktop behavior (keybindings, default apps), systemd
+services, or real (non-mocked) apt/flatpak installs. For that, a local libvirt VM is
+available:
+
+```bash
+./test/test-vm.sh
+```
+
+This resets the VM to a clean pre-bootstrap state, boots it, mounts this repo into the
+guest, and runs bootstrap over SSH as the normal user, then opens a virt-manager
+console window so you can watch or interact with the desktop. See `AGENTS.md` for how
+the reset mechanism works and env var overrides.
 
 ## Development
 
