@@ -99,6 +99,16 @@ fi
 
 mkdir -p "$HOME/.config"
 
+WALLPAPER_PATH="$HOME/.local/share/backgrounds/wallpaper.jpg"
+if [ -f "$WALLPAPER_PATH" ] && command -v gsettings &>/dev/null; then
+    if gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER_PATH" 2>/dev/null \
+        && gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER_PATH" 2>/dev/null; then
+        echo "Set GNOME desktop background to $WALLPAPER_PATH"
+    else
+        echo "WARNING: Skipping GNOME wallpaper configuration (no active desktop session found)."
+    fi
+fi
+
 if command -v ghostty &> /dev/null; then
     if [ -f /usr/bin/ghostty ]; then
         update-alternatives --set x-terminal-emulator /usr/bin/ghostty 2>/dev/null || true

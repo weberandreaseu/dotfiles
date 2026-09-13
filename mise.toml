@@ -48,5 +48,6 @@ enabled = true
 "~/.config/user-dirs.locale" = "dotfiles/.config/user-dirs.locale"
 "~/.config/xdg-terminals.list" = "dotfiles/.config/xdg-terminals.list"
 "~/.local/bin/gradia" = "dotfiles/.local/bin/gradia"
+"~/.local/share/backgrounds/wallpaper.jpg" = "dotfiles/.local/share/backgrounds/wallpaper.jpg"
 "~/.claude/settings.json" = "dotfiles/.claude/settings.json"
 "~/.claude/statusline.sh" = "dotfiles/.claude/statusline.sh"
