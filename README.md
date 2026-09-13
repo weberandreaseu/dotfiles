@@ -39,7 +39,7 @@ exec zsh
 - `mise`
 - Node.js + `npm` (latest via `mise`)
 - Java (latest Temurin GA release via `mise`)
-- `kubectl`, `fzf`, and `zoxide` (latest via `mise`)
+- `kubectl`, `fzf`, `zoxide`, `jq`, `yq`, `fd`, and `ripgrep` (latest via `mise`)
 - JetBrains Toolbox
 - Claude Code and `opencode` (latest via `mise`)
 - Gradia (latest from Flathub, user-scope install during bootstrap)
@@ -116,7 +116,7 @@ mise bootstrap dotfiles unapply --yes
 
 - Global runtime config is managed at `~/.config/mise/config.toml`.
 - `dotfiles/.config/mise/config.toml` is the sole source of truth for tool versions; root `mise.toml` only configures bootstrap and dotfile mappings.
-- Bootstrap links that global config, then uses `mise install` to install any missing configured Node.js (including `npm`), Temurin Java, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` versions.
+- Bootstrap links that global config, then uses `mise install` to install any missing configured Node.js (including `npm`), Temurin Java, Codex, Claude Code, `kubectl`, `fzf`, `zoxide`, `opencode`, `jq`, `yq`, `fd`, and `ripgrep` versions.
 - Re-running bootstrap converges missing tools; use a separate mise upgrade workflow when you want to refresh already installed `latest` versions.
 
 ## Adding and Checking In New Config Files
@@ -181,7 +181,7 @@ What it validates:
 - Zsh config syntax and load behavior
 - Key aliases are present
 - Git identity and core tools are configured
-- `node`, `npm`, Temurin Java, Claude Code, `kubectl`, `fzf`, `zoxide`, and `opencode` are installed via `mise`
+- `node`, `npm`, Temurin Java, Claude Code, `kubectl`, `fzf`, `zoxide`, `opencode`, `jq`, `yq`, `fd`, and `ripgrep` are installed via `mise`
 - `mise bootstrap dotfiles status --missing` is clean
 - Zsh interactive startup median stays under regression threshold
 
