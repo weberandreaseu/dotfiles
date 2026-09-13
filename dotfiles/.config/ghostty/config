@@ -4,3 +4,5 @@ font-size = 13
 theme = Catppuccin Mocha
 
 shell-integration = zsh
+
+keybind = ctrl+shift+insert=paste_from_clipboard
