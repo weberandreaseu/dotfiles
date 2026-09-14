@@ -25,6 +25,12 @@ sudo apt-get install -y cmake
 # sudo apt-get install -y findutils
 # sudo apt-get install -y grep
 sudo apt-get install -y gzip
+sudo apt-get install -y htop
+sudo apt-get install -y nmap
+sudo apt-get install -y traceroute
+sudo apt-get install -y tree
+sudo apt-get install -y wl-clipboard
+sudo apt-get install -y fonts-firacode
 
 # sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
