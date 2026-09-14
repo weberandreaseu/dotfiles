@@ -106,7 +106,7 @@ fi
 
 echo '[user]
 	email = test@example.com' > "$HOME_DIR/.gitconfig.local"
-if [ "$(git config --global user.email 2>/dev/null)" = "test@example.com" ]; then
+if [ "$(git config --global --includes user.email 2>/dev/null)" = "test@example.com" ]; then
     pass "Git user.email resolves via ~/.gitconfig.local"
 else
     fail "Git user.email did not resolve via ~/.gitconfig.local"
