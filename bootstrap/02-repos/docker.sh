@@ -15,7 +15,6 @@ if ! grep -Rqs "download.docker.com" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Setting up Docker repository..."
 
     apt_update_once "Docker prerequisite index refresh"
-    sudo apt-get install -y ca-certificates
 
     sudo install -d -m 0755 /etc/apt/keyrings
     sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc

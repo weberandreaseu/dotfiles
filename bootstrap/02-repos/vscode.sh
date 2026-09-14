@@ -5,10 +5,6 @@ set -e
 if ! grep -Rqs "packages.microsoft.com/repos/code" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Configuring VS Code repository..."
 
-    sudo apt-get install -y --no-install-recommends ca-certificates
-    sudo apt-get install -y --no-install-recommends curl
-    sudo apt-get install -y --no-install-recommends gnupg
-
     tmp_key="$(mktemp)"
     curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o "$tmp_key"
     sudo install -D -o root -g root -m 644 "$tmp_key" /usr/share/keyrings/microsoft.gpg
