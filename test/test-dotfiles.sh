@@ -98,11 +98,20 @@ else
     fail "Git user.name not configured"
 fi
 
-if git config --global user.email >/dev/null 2>&1; then
-    pass "Git user.email configured"
+if git config --global include.path 2>/dev/null | grep -q '.gitconfig.local'; then
+    pass "Git user.email sourced from untracked ~/.gitconfig.local"
 else
-    fail "Git user.email not configured"
+    fail "Git .gitconfig does not include ~/.gitconfig.local"
 fi
+
+echo '[user]
+	email = test@example.com' > "$HOME_DIR/.gitconfig.local"
+if [ "$(git config --global user.email 2>/dev/null)" = "test@example.com" ]; then
+    pass "Git user.email resolves via ~/.gitconfig.local"
+else
+    fail "Git user.email did not resolve via ~/.gitconfig.local"
+fi
+rm -f "$HOME_DIR/.gitconfig.local"
 
 echo
 echo "--- Tools Tests ---"
