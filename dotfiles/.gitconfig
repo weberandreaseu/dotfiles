@@ -1,7 +1,8 @@
 [user]
-	email = info@weberandreas.eu
 	name = Andreas Weber
 [core]
 	excludesFile = ~/.config/git/ignore
 [push]
 	autoSetupRemote = true
+[include]
+	path = ~/.gitconfig.local
