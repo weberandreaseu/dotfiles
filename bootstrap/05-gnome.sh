@@ -2,9 +2,6 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=bootstrap/lib/root.sh
-source "$SCRIPT_DIR/lib/root.sh"
-ensure_root "05-gnome.sh" "$@"
 
 CUSTOM_SHORTCUTS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-custom-shortcuts.dconf"
 WM_KEYBINDINGS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-wm-keybindings.dconf"
@@ -18,28 +15,17 @@ warn() {
 }
 
 apply_custom_shortcuts() {
-    local target_user="${SUDO_USER:-}"
-    local target_uid=""
+    local current_uid=""
     local user_runtime_dir=""
     local user_dbus_bus=""
-
-    if [ -z "$target_user" ]; then
-        warn "Skipping GNOME custom shortcut import because SUDO_USER is not set."
-        return 0
-    fi
 
     if ! command -v dconf >/dev/null 2>&1; then
         warn "Skipping GNOME custom shortcut import because dconf is not installed."
         return 0
     fi
 
-    target_uid="$(id -u "$target_user" 2>/dev/null || true)"
-    if [ -z "$target_uid" ]; then
-        warn "Skipping GNOME custom shortcut import because user lookup failed for: $target_user"
-        return 0
-    fi
-
-    user_runtime_dir="/run/user/$target_uid"
+    current_uid="$(id -u)"
+    user_runtime_dir="/run/user/$current_uid"
     user_dbus_bus="$user_runtime_dir/bus"
 
     if [ ! -S "$user_dbus_bus" ]; then
@@ -56,44 +42,24 @@ apply_custom_shortcuts() {
             return 0
         fi
 
-        if command -v runuser >/dev/null 2>&1; then
-            if cat "$dconf_file" | runuser -u "$target_user" -- env \
-                XDG_RUNTIME_DIR="$user_runtime_dir" \
-                DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                dconf load "$dconf_prefix"; then
-                echo "Applied GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
-            else
-                warn "Failed GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
-            fi
-            return 0
+        if XDG_RUNTIME_DIR="$user_runtime_dir" \
+           DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
+           dconf load "$dconf_prefix" < "$dconf_file"; then
+            echo "Applied GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
+        else
+            warn "Failed GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
         fi
-
-        if command -v sudo >/dev/null 2>&1; then
-            if cat "$dconf_file" | sudo -u "$target_user" env \
-                XDG_RUNTIME_DIR="$user_runtime_dir" \
-                DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                dconf load "$dconf_prefix"; then
-                echo "Applied GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
-            else
-                warn "Failed GNOME dconf import: $dconf_prefix from $(basename "$dconf_file")"
-            fi
-            return 0
-        fi
-
-        warn "Skipping GNOME dconf import because neither runuser nor sudo is available."
     }
 
     apply_dconf_file "/org/gnome/settings-daemon/plugins/media-keys/" "$CUSTOM_SHORTCUTS_DCONF_FILE"
     apply_dconf_file "/org/gnome/desktop/wm/keybindings/" "$WM_KEYBINDINGS_DCONF_FILE"
     apply_dconf_file "/org/gnome/mutter/keybindings/" "$MUTTER_KEYBINDINGS_DCONF_FILE"
 
-    echo "GNOME keybindings import completed for user: $target_user"
+    echo "GNOME keybindings import completed"
 }
 
 install_clipboard_indicator() {
-    local target_user="${SUDO_USER:-}"
-    local target_uid=""
-    local user_home=""
+    local current_uid=""
     local user_runtime_dir=""
     local user_dbus_bus=""
     local shell_version=""
@@ -101,29 +67,18 @@ install_clipboard_indicator() {
     local download_path=""
     local tmp_zip=""
 
-    if [ -z "$target_user" ]; then
-        warn "Skipping Clipboard Indicator install because SUDO_USER is not set."
-        return 0
-    fi
-
     if ! command -v gnome-extensions >/dev/null 2>&1 || ! command -v gnome-shell >/dev/null 2>&1; then
         warn "Skipping Clipboard Indicator install because gnome-shell is not installed."
         return 0
     fi
 
-    user_home="$(getent passwd "$target_user" | cut -d: -f6)"
-    if [ -n "$user_home" ] && [ -d "$user_home/.local/share/gnome-shell/extensions/$CLIPBOARD_INDICATOR_UUID" ]; then
-        echo "Clipboard Indicator extension already installed for $target_user, skipping."
+    if [ -d "${HOME:-}/.local/share/gnome-shell/extensions/$CLIPBOARD_INDICATOR_UUID" ]; then
+        echo "Clipboard Indicator extension already installed, skipping."
         return 0
     fi
 
-    target_uid="$(id -u "$target_user" 2>/dev/null || true)"
-    if [ -z "$target_uid" ]; then
-        warn "Skipping Clipboard Indicator install because user lookup failed for: $target_user"
-        return 0
-    fi
-
-    user_runtime_dir="/run/user/$target_uid"
+    current_uid="$(id -u)"
+    user_runtime_dir="/run/user/$current_uid"
     user_dbus_bus="$user_runtime_dir/bus"
 
     if [ ! -S "$user_dbus_bus" ]; then
@@ -155,32 +110,14 @@ install_clipboard_indicator() {
         rm -f "$tmp_zip"
         return 0
     fi
-    chmod 644 "$tmp_zip"
 
-    run_as_target_user() {
-        if command -v runuser >/dev/null 2>&1; then
-            runuser -u "$target_user" -- env \
-                XDG_RUNTIME_DIR="$user_runtime_dir" \
-                DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                "$@"
-            return $?
-        fi
-
-        if command -v sudo >/dev/null 2>&1; then
-            sudo -u "$target_user" env \
-                XDG_RUNTIME_DIR="$user_runtime_dir" \
-                DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
-                "$@"
-            return $?
-        fi
-
-        warn "Skipping Clipboard Indicator install because neither runuser nor sudo is available."
-        return 1
-    }
-
-    if run_as_target_user gnome-extensions install "$tmp_zip" \
-        && run_as_target_user gnome-extensions enable "$CLIPBOARD_INDICATOR_UUID"; then
-        echo "Installed and enabled Clipboard Indicator extension for $target_user."
+    if XDG_RUNTIME_DIR="$user_runtime_dir" \
+       DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
+       gnome-extensions install "$tmp_zip" \
+    && XDG_RUNTIME_DIR="$user_runtime_dir" \
+       DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
+       gnome-extensions enable "$CLIPBOARD_INDICATOR_UUID"; then
+        echo "Installed and enabled Clipboard Indicator extension."
     else
         warn "Failed to install/enable Clipboard Indicator extension."
     fi
