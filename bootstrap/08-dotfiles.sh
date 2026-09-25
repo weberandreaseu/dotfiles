@@ -81,7 +81,7 @@ if [ "${DOTFILES_CONTAINER_TEST:-0}" = "1" ]; then
 fi
 
 echo "Applying managed user shell, dotfiles, system packages, and services with mise..."
-mise bootstrap --yes --only "$MISE_BOOTSTRAP_PARTS"
+mise bootstrap --yes --force-dotfiles --only "$MISE_BOOTSTRAP_PARTS"
 
 echo "Installing tools from the managed global mise config..."
 mise install

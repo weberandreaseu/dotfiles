@@ -29,7 +29,7 @@ run_as_root "Firefox APT pinning" install -m 0644 "$TMP_PIN_FILE" "$FIREFOX_PIN_
 rm -f "$TMP_PIN_FILE"
 
 echo "Installing Firefox (Mozilla APT package)..."
-run_as_root "Firefox APT install" apt-get install -y firefox
+run_as_root "Firefox APT install" apt-get install -y --allow-downgrades firefox
 
 if command -v snap > /dev/null 2>&1 && snap list firefox > /dev/null 2>&1; then
     echo "Removing Firefox Snap package"
