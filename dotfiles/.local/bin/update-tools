@@ -5,3 +5,7 @@ if command -v mise >/dev/null 2>&1; then
     mise self-update --yes || true
     mise upgrade || true
 fi
+
+if command -v flatpak >/dev/null 2>&1; then
+    flatpak update --user --noninteractive || true
+fi
