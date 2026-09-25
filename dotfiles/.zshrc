@@ -131,3 +131,6 @@ fi
 if command -v dtctl >/dev/null 2>&1; then
     source <(dtctl completion zsh)
 fi
+if command -v bbctl >/dev/null 2>&1; then
+    source <(bbctl completion zsh)
+fi
