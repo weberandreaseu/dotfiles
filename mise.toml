@@ -9,6 +9,14 @@ login_shell = "/bin/zsh"
 state = "running"
 enabled = true
 
+[bootstrap.services.update-skills]
+scope = "user"
+command = "~/.local/bin/update-skills"
+restart = "never"
+state = "stopped"
+enabled = true
+environment = { HOME = "~", PATH = "~/.local/share/mise/shims:~/.local/bin:/usr/local/bin:/usr/bin:/bin" }
+
 [dotfiles]
 "~/.zshrc" = "dotfiles/.zshrc"
 "~/.zshenv" = "dotfiles/.zshenv"
@@ -26,3 +34,5 @@ enabled = true
 "~/.local/bin/gradia" = "dotfiles/.local/bin/gradia"
 "~/.local/share/backgrounds/wallpaper.jpg" = "dotfiles/.local/share/backgrounds/wallpaper.jpg"
 "~/.claude/statusline.sh" = "dotfiles/.claude/statusline.sh"
+"~/.local/bin/update-skills" = "dotfiles/.local/bin/update-skills"
+"~/.config/systemd/user/update-skills.timer" = "dotfiles/.config/systemd/user/update-skills.timer"

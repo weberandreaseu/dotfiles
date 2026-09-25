@@ -1,0 +1,11 @@
+[Unit]
+Description=Update AI coding assistant skills daily
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=24h
+Persistent=true
+Unit=dev.mise.update-skills.service
+
+[Install]
+WantedBy=timers.target
