@@ -72,17 +72,20 @@ install_clipboard_indicator() {
         return 0
     fi
 
-    if [ -d "${HOME:-}/.local/share/gnome-shell/extensions/$CLIPBOARD_INDICATOR_UUID" ]; then
-        echo "Clipboard Indicator extension already installed, skipping."
-        return 0
-    fi
-
     current_uid="$(id -u)"
     user_runtime_dir="/run/user/$current_uid"
     user_dbus_bus="$user_runtime_dir/bus"
 
     if [ ! -S "$user_dbus_bus" ]; then
-        warn "Skipping Clipboard Indicator install because no user DBus session bus was found at $user_dbus_bus"
+        warn "Skipping Clipboard Indicator install/enable because no user DBus session bus was found at $user_dbus_bus"
+        return 0
+    fi
+
+    if [ -d "${HOME:-}/.local/share/gnome-shell/extensions/$CLIPBOARD_INDICATOR_UUID" ]; then
+        echo "Clipboard Indicator extension already installed, enabling."
+        XDG_RUNTIME_DIR="$user_runtime_dir" \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=$user_dbus_bus" \
+        gnome-extensions enable "$CLIPBOARD_INDICATOR_UUID" || warn "Failed to enable Clipboard Indicator extension."
         return 0
     fi
 
