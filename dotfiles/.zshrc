@@ -157,6 +157,11 @@ zstyle ':fzf-tab:complete:git-(checkout|switch|rebase|merge|log|show):*' fzf-pre
     'git log --color=always --oneline --graph --decorate -20 $word 2>/dev/null'
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview \
     'SYSTEMD_COLORS=1 systemctl status -- $word 2>/dev/null'
+# _journalctl does not override curcontext, so the unit argument lands under
+# :complete:journalctl:option-u-1 and friends. Non-unit arguments just preview
+# empty, which is why the error is swallowed.
+zstyle ':fzf-tab:complete:journalctl:*' fzf-preview \
+    'SYSTEMD_COLORS=1 journalctl --no-pager -n 50 -u $word 2>/dev/null'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
     'ps -p $word -o cmd --no-headers -w -w 2>/dev/null'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
