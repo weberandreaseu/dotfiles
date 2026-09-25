@@ -145,12 +145,15 @@ zstyle ':fzf-tab:*' use-fzf-default-opts yes
 # Uncomment with tmux >= 3.2 to render the picker in a popup instead of inline.
 # zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
-# Previews. No bat/eza on this machine, so these stay coreutils-only.
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always -1A -- $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color=always -1A -- $realpath'
+# Previews. eza/bat when present, coreutils otherwise -- previews run in a bare
+# child shell that never sources this file, so the fallback has to be inline.
+zstyle ':fzf-tab:complete:cd:*' fzf-preview \
+    'eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview \
+    'eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath'
 # Generic fallback: list directories, head readable files, stay quiet otherwise.
 zstyle ':fzf-tab:complete:*:*' fzf-preview \
-    '{ [[ -d $realpath ]] && ls --color=always -1A -- $realpath } || { [[ -f $realpath ]] && head -n 200 -- $realpath } 2>/dev/null'
+    '{ [[ -d $realpath ]] && { eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath } } || { [[ -f $realpath ]] && { bat --color=always --style=numbers --line-range=:200 -- $realpath 2>/dev/null || head -n 200 -- $realpath } } 2>/dev/null'
 zstyle ':fzf-tab:complete:git-(add|diff|restore|stash):*' fzf-preview \
     'git diff --color=always -- $word 2>/dev/null | head -n 200'
 zstyle ':fzf-tab:complete:git-(checkout|switch|rebase|merge|log|show):*' fzf-preview \
@@ -179,6 +182,17 @@ eval "$(zoxide init --cmd cd zsh)"
 # Claim TAB back now that every integration has been evaluated.
 if [[ -n "${ZSH_TAB_BOOTSTRAP_WIDGET:-}" ]]; then
     bindkey '^I' "$ZSH_TAB_BOOTSTRAP_WIDGET"
+fi
+
+# Upgrade the ls family to eza. This cannot live in .alias.zsh: that is sourced
+# at the top of this file, before `mise activate` puts eza on PATH, so a guard
+# there would always fail. `cat` is deliberately left alone -- see AGENTS.md.
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza --group-directories-first'
+    alias ll='eza -lh  --group-directories-first --git'
+    alias la='eza -lAh --group-directories-first --git'
+    alias l='eza  -lah --group-directories-first --git'
+    alias lt='eza --tree --level=2 --group-directories-first'
 fi
 if command -v mise >/dev/null 2>&1; then
     source <(mise completion zsh)
