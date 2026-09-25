@@ -64,19 +64,33 @@ _run_compinit() {
     fi
 }
 
+# Widget TAB should ultimately run. fzf-tab (loaded above) installs its own
+# completion widget; without it, fall back to plain zsh completion.
+if (( $+widgets[fzf-tab-complete] )); then
+    ZSH_TAB_WIDGET=fzf-tab-complete
+else
+    ZSH_TAB_WIDGET=expand-or-complete
+fi
+
 if [[ -o interactive && ! -o zle ]]; then
-    :
+    ZSH_TAB_BOOTSTRAP_WIDGET=""
 elif [[ "${ZSH_LAZY_COMPINIT:-1}" == "1" ]]; then
+    # First TAB press pays for compinit, then hands TAB over to the real widget.
+    # Re-queue the TAB with `zle -U` instead of calling the widget directly:
+    # fzf-tab accepts a selection via a `zle -C` completion widget, and invoking
+    # that from inside another widget crashes zsh. Ungetting the key makes ZLE
+    # dispatch it at top level once this widget returns.
     _lazy_compinit() {
         zle -D _lazy_compinit
-        bindkey '^I' expand-or-complete
         _run_compinit
-        zle expand-or-complete
+        bindkey '^I' "$ZSH_TAB_WIDGET"
+        zle -U $'\t'
     }
     zle -N _lazy_compinit
-    bindkey '^I' _lazy_compinit
+    ZSH_TAB_BOOTSTRAP_WIDGET=_lazy_compinit
 else
     _run_compinit
+    ZSH_TAB_BOOTSTRAP_WIDGET="$ZSH_TAB_WIDGET"
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -110,7 +124,10 @@ setopt hist_find_no_dups
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# menu must stay off: fzf-tab replaces zsh's own menu with an fzf picker.
 zstyle ':completion:*' menu no
+# Navigate the fzf-tab menu with Tab / Shift-Tab (arrows and ^N/^P work too).
+zstyle ':fzf-tab:*' fzf-bindings 'tab:down' 'btab:up'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
@@ -122,6 +139,11 @@ fi
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
+# `fzf --zsh` binds TAB to its own fzf-completion widget, which shadows fzf-tab.
+# Claim TAB back now that every integration has been evaluated.
+if [[ -n "${ZSH_TAB_BOOTSTRAP_WIDGET:-}" ]]; then
+    bindkey '^I' "$ZSH_TAB_BOOTSTRAP_WIDGET"
+fi
 if command -v mise >/dev/null 2>&1; then
     source <(mise completion zsh)
 fi
