@@ -107,6 +107,8 @@ bindkey "^[[1;5D" backward-word   # Ctrl + Left
 bindkey "^[[1;5H" beginning-of-line  # Ctrl + Home
 bindkey "^[[1;5F" end-of-line        # Ctrl + End
 bindkey "^H" backward-kill-word   # Ctrl + Backspace
+# Escape hatch back to plain compsys when a completion misbehaves under fzf-tab.
+(( $+widgets[toggle-fzf-tab] )) && bindkey '^X^T' toggle-fzf-tab
 
 # History
 HISTSIZE=5000
@@ -126,10 +128,47 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # menu must stay off: fzf-tab replaces zsh's own menu with an fzf picker.
 zstyle ':completion:*' menu no
-# Navigate the fzf-tab menu with Tab / Shift-Tab (arrows and ^N/^P work too).
-zstyle ':fzf-tab:*' fzf-bindings 'tab:down' 'btab:up'
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+# Group support. fzf-tab needs a descriptions format to render group headers at
+# all -- without it there are no groups for switch-group to cycle through.
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '[%d]'
+# Offer branches by recency rather than alphabetically.
+zstyle ':completion:*:git-checkout:*' sort false
+
+# fzf-tab. Defaults already cover Tab/Shift-Tab to move, Ctrl+Space to
+# multi-select, `/` for continuous completion and Alt+Enter to insert the raw
+# query, so only the deviations are set here.
+# F1/F2 are frequently swallowed by the terminal; use < and > to switch groups.
+zstyle ':fzf-tab:*' switch-group '<' '>'
+# Inherit the FZF_DEFAULT_OPTS theme (off by default in fzf-tab).
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# Uncomment with tmux >= 3.2 to render the picker in a popup instead of inline.
+# zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+
+# Previews. eza/bat when present, coreutils otherwise -- previews run in a bare
+# child shell that never sources this file, so the fallback has to be inline.
+zstyle ':fzf-tab:complete:cd:*' fzf-preview \
+    'eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview \
+    'eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath'
+# Generic fallback: list directories, head readable files, stay quiet otherwise.
+zstyle ':fzf-tab:complete:*:*' fzf-preview \
+    '{ [[ -d $realpath ]] && { eza -1A --color=always --icons -- $realpath 2>/dev/null || ls --color=always -1A -- $realpath } } || { [[ -f $realpath ]] && { bat --color=always --style=numbers --line-range=:200 -- $realpath 2>/dev/null || head -n 200 -- $realpath } } 2>/dev/null'
+zstyle ':fzf-tab:complete:git-(add|diff|restore|stash):*' fzf-preview \
+    'git diff --color=always -- $word 2>/dev/null | head -n 200'
+zstyle ':fzf-tab:complete:git-(checkout|switch|rebase|merge|log|show):*' fzf-preview \
+    'git log --color=always --oneline --graph --decorate -20 $word 2>/dev/null'
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview \
+    'SYSTEMD_COLORS=1 systemctl status -- $word 2>/dev/null'
+# _journalctl does not override curcontext, so the unit argument lands under
+# :complete:journalctl:option-u-1 and friends. Non-unit arguments just preview
+# empty, which is why the error is swallowed.
+zstyle ':fzf-tab:complete:journalctl:*' fzf-preview \
+    'SYSTEMD_COLORS=1 journalctl --no-pager -n 50 -u $word 2>/dev/null'
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+    'ps -p $word -o cmd --no-headers -w -w 2>/dev/null'
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
+zstyle ':fzf-tab:complete:-command-:*' fzf-preview 'whence -a -- $word 2>/dev/null | head -n 20'
 
 # Shell integrations
 # mise must activate first: it puts mise-managed tools like fzf and zoxide on PATH.
@@ -143,6 +182,17 @@ eval "$(zoxide init --cmd cd zsh)"
 # Claim TAB back now that every integration has been evaluated.
 if [[ -n "${ZSH_TAB_BOOTSTRAP_WIDGET:-}" ]]; then
     bindkey '^I' "$ZSH_TAB_BOOTSTRAP_WIDGET"
+fi
+
+# Upgrade the ls family to eza. This cannot live in .alias.zsh: that is sourced
+# at the top of this file, before `mise activate` puts eza on PATH, so a guard
+# there would always fail. `cat` is deliberately left alone -- see AGENTS.md.
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza --group-directories-first'
+    alias ll='eza -lh  --group-directories-first --git'
+    alias la='eza -lAh --group-directories-first --git'
+    alias l='eza  -lah --group-directories-first --git'
+    alias lt='eza --tree --level=2 --group-directories-first'
 fi
 if command -v mise >/dev/null 2>&1; then
     source <(mise completion zsh)

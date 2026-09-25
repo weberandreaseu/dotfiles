@@ -57,6 +57,8 @@ The Docker test runs these validations from `test/test-dotfiles.sh`:
 - `yq`
 - `fd`
 - `ripgrep`
+- `bat`
+- `eza`
 - Node.js and npm
 - Java (Temurin)
 - Codex
@@ -140,6 +142,14 @@ immutable backing file (named `ubuntu25.10.<new-name>`). Update `BASE_DISK` in
   first login. Any new managed dotfile that could already exist on a fresh machine
   needs `backup_managed_file_conflict` handling in `08-dotfiles.sh`, or
   `mise bootstrap dotfiles apply` refuses to overwrite it.
+- `dotfiles/.alias.zsh` is sourced at the *top* of `.zshrc`, before `mise
+  activate` runs. Aliases that depend on a mise-managed tool being on `PATH`
+  (e.g. `eza`) cannot be guarded with `command -v` there -- the guard always
+  fails. Put those at the end of `.zshrc` instead.
+- `ls` is aliased to `eza`; `cat` is deliberately *not* aliased to `bat`. `cat`
+  is a primitive people pipe and script around, and shadowing it trades
+  predictability for colour. Use `bat` by name when you want a pager.
+
 - GNOME (50+) does not use `org.gnome.desktop.default-applications.terminal` for
   Ctrl+Alt+T — it shells out to `xdg-terminal-exec`, which reads
   `~/.config/xdg-terminals.list` (highest-priority user override). That's the file to

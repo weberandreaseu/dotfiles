@@ -148,7 +148,7 @@ else
     fail "Temurin Java not found or not runnable via mise"
 fi
 
-for tool in claude fzf zoxide opencode jq yq fd rg; do
+for tool in claude fzf zoxide opencode jq yq fd rg bat eza; do
     if zsh -i -c "command -v $tool >/dev/null && $tool --version >/dev/null" 2>/dev/null; then
         pass "$tool installed via mise"
     else
