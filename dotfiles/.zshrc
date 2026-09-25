@@ -144,3 +144,15 @@ eval "$(zoxide init --cmd cd zsh)"
 if [[ -n "${ZSH_TAB_BOOTSTRAP_WIDGET:-}" ]]; then
     bindkey '^I' "$ZSH_TAB_BOOTSTRAP_WIDGET"
 fi
+if command -v mise >/dev/null 2>&1; then
+    source <(mise completion zsh)
+fi
+if command -v junoctl >/dev/null 2>&1; then
+    source <(junoctl completion zsh)
+fi
+if command -v dtctl >/dev/null 2>&1; then
+    source <(dtctl completion zsh)
+fi
+if command -v bbctl >/dev/null 2>&1; then
+    source <(bbctl completion zsh)
+fi
