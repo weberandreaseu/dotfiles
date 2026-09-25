@@ -28,14 +28,14 @@ Components: stable
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
-    sudo apt-get update
+    sudo apt update
     echo "Docker repository configured"
 else
     echo "Docker repo already configured"
 fi
 
-sudo apt-get install -y containerd.io
-sudo apt-get install -y docker-buildx-plugin
-sudo apt-get install -y docker-ce
-sudo apt-get install -y docker-ce-cli
-sudo apt-get install -y docker-compose-plugin
+sudo apt install -y containerd.io
+sudo apt install -y docker-buildx-plugin
+sudo apt install -y docker-ce
+sudo apt install -y docker-ce-cli
+sudo apt install -y docker-compose-plugin

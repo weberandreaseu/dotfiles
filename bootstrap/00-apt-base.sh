@@ -9,29 +9,21 @@ echo "=== 00: Installing base packages ==="
 
 apt_update_once "00-apt-base package index refresh"
 
-sudo apt-get install -y git
-sudo apt-get install -y flatpak
-sudo apt-get install -y curl
-sudo apt-get install -y wget
-sudo apt-get install -y gnupg
-sudo apt-get install -y zsh
-sudo apt-get install -y unzip
-sudo apt-get install -y ca-certificates
-# sudo apt-get install -y fonts-powerline
-sudo apt-get install -y build-essential
-sudo apt-get install -y cmake
-# sudo apt-get install -y bsdutils
-# sudo apt-get install -y diffutils
-# sudo apt-get install -y findutils
-# sudo apt-get install -y grep
-sudo apt-get install -y gzip
-sudo apt-get install -y htop
-sudo apt-get install -y nmap
-sudo apt-get install -y traceroute
-sudo apt-get install -y tree
-sudo apt-get install -y wl-clipboard
-sudo apt-get install -y fonts-firacode
+sudo apt install -y git
+sudo apt install -y flatpak
+sudo apt install -y curl
+sudo apt install -y wget
+sudo apt install -y gnupg
+sudo apt install -y zsh
+sudo apt install -y unzip
+sudo apt install -y ca-certificates
+sudo apt install -y gzip
+sudo apt install -y htop
+sudo apt install -y traceroute
+sudo apt install -y tree
+sudo apt install -y wl-clipboard
+sudo apt install -y fonts-firacode
 
-# sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "=== 00: Base packages installed ==="
