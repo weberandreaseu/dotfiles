@@ -4,6 +4,19 @@ set -uo pipefail
 if command -v junoctl >/dev/null 2>&1; then
     junoctl update --yes || true
     junoctl skills update || true
+    junoctl plugins update || true
+
+    # Symlink arch-detecting wrapper scripts from plugin bin/ dirs into ~/.local/bin.
+    # Skips arch-specific suffixed binaries (e.g. acli-pii-linux-amd64) and .exe files.
+    while IFS= read -r -d '' binary; do
+        ln -sf "$binary" "$HOME/.local/bin/$(basename "$binary")"
+    done < <(find "$HOME/.cache/junoctl/repos" -path "*/plugins/*/bin/*" -maxdepth 6 \
+        -type f \
+        -not -name '*-linux-*' \
+        -not -name '*-darwin-*' \
+        -not -name '*-windows-*' \
+        -not -name '*.exe' \
+        -print0 2>/dev/null)
 fi
 
 if command -v dtctl >/dev/null 2>&1; then
