@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+if command -v mise >/dev/null 2>&1; then
+    mise self-update --yes || true
+    mise upgrade || true
+fi

@@ -9,6 +9,14 @@ login_shell = "/bin/zsh"
 state = "running"
 enabled = true
 
+[bootstrap.services.update-tools]
+scope = "user"
+command = "~/.local/bin/update-tools"
+restart = "never"
+state = "stopped"
+enabled = true
+environment = { HOME = "~", PATH = "~/.local/share/mise/shims:~/.local/bin:/usr/local/bin:/usr/bin:/bin" }
+
 [bootstrap.services.update-skills]
 scope = "user"
 command = "~/.local/bin/update-skills"
@@ -34,5 +42,7 @@ environment = { HOME = "~", PATH = "~/.local/share/mise/shims:~/.local/bin:/usr/
 "~/.local/bin/gradia" = "dotfiles/.local/bin/gradia"
 "~/.local/share/backgrounds/wallpaper.jpg" = "dotfiles/.local/share/backgrounds/wallpaper.jpg"
 "~/.claude/statusline.sh" = "dotfiles/.claude/statusline.sh"
+"~/.local/bin/update-tools" = "dotfiles/.local/bin/update-tools"
+"~/.config/systemd/user/update-tools.timer" = "dotfiles/.config/systemd/user/update-tools.timer"
 "~/.local/bin/update-skills" = "dotfiles/.local/bin/update-skills"
 "~/.config/systemd/user/update-skills.timer" = "dotfiles/.config/systemd/user/update-skills.timer"
