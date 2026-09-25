@@ -2,26 +2,15 @@
 set -e
 # VS Code: https://code.visualstudio.com/docs/setup/linux
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=bootstrap/lib/root.sh
-source "$SCRIPT_DIR/../lib/root.sh"
-ensure_root "VS Code repository setup" "$@"
+if ! grep -Rqs "packages.microsoft.com/repos/code" /etc/apt/sources.list.d 2>/dev/null; then
+    echo "Configuring VS Code repository..."
 
-if grep -Rqs "packages.microsoft.com/repos/code" /etc/apt/sources.list.d 2>/dev/null; then
-    echo "VS Code repo already configured"
-    exit 0
-fi
+    tmp_key="$(mktemp)"
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o "$tmp_key"
+    sudo install -D -o root -g root -m 644 "$tmp_key" /usr/share/keyrings/microsoft.gpg
+    rm -f "$tmp_key"
 
-echo "Configuring VS Code repository..."
-
-apt-get install -y --no-install-recommends ca-certificates curl gnupg
-
-tmp_key="$(mktemp)"
-curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o "$tmp_key"
-install -D -o root -g root -m 644 "$tmp_key" /usr/share/keyrings/microsoft.gpg
-rm -f "$tmp_key"
-
-tee /etc/apt/sources.list.d/vscode.sources > /dev/null <<EOF
+    sudo tee /etc/apt/sources.list.d/vscode.sources > /dev/null <<EOF
 Types: deb
 URIs: https://packages.microsoft.com/repos/code
 Suites: stable
@@ -30,4 +19,10 @@ Architectures: amd64,arm64,armhf
 Signed-By: /usr/share/keyrings/microsoft.gpg
 EOF
 
-echo "VS Code repo configured"
+    sudo apt-get update
+    echo "VS Code repo configured"
+else
+    echo "VS Code repo already configured"
+fi
+
+sudo apt-get install -y code

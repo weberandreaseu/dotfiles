@@ -1,1 +1,6 @@
 .idea/
+.claude/worktrees
+.junoctl.lock
+.claude/skills/*
+.claude/*.local.json
+.dtctl.yaml

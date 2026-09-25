@@ -2,7 +2,9 @@
 	name = Andreas Weber
 [core]
 	excludesFile = ~/.config/git/ignore
+	autocrlf = input
 [push]
 	autoSetupRemote = true
+	default = current
 [include]
 	path = ~/.gitconfig.local

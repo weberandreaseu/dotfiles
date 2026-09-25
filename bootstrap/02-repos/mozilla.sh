@@ -2,11 +2,6 @@
 set -e
 # Mozilla Firefox: https://support.mozilla.org/kb/install-firefox-linux
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=bootstrap/lib/root.sh
-source "$SCRIPT_DIR/../lib/root.sh"
-ensure_root "Mozilla repository setup" "$@"
-
 if grep -Rqs "packages.mozilla.org/apt" /etc/apt/sources.list.d 2>/dev/null; then
     echo "Mozilla repo already configured"
     exit 0
@@ -14,9 +9,9 @@ fi
 
 echo "Adding Mozilla repository..."
 
-install -d -m 0755 /etc/apt/keyrings
-wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
-chmod a+r /etc/apt/keyrings/packages.mozilla.org.asc
+sudo install -d -m 0755 /etc/apt/keyrings
+wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
+sudo chmod a+r /etc/apt/keyrings/packages.mozilla.org.asc
 
 if command -v gpg > /dev/null 2>&1; then
     EXPECTED_FINGERPRINT="35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3"
@@ -27,12 +22,12 @@ if command -v gpg > /dev/null 2>&1; then
     fi
 fi
 
-echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | tee /etc/apt/sources.list.d/mozilla.list > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list > /dev/null
 
 echo '
 Package: *
 Pin: origin packages.mozilla.org
 Pin-Priority: 1000
-' | tee /etc/apt/preferences.d/mozilla > /dev/null
+' | sudo tee /etc/apt/preferences.d/mozilla > /dev/null
 
 echo "Mozilla repo added"

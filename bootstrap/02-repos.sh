@@ -4,7 +4,6 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
-ensure_root "02-repos.sh" "$@"
 
 echo "=== 02: Adding third-party repositories ==="
 

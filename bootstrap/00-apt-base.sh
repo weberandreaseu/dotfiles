@@ -4,35 +4,26 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bootstrap/lib/root.sh
 source "$SCRIPT_DIR/lib/root.sh"
-ensure_root "00-apt-base.sh" "$@"
 
 echo "=== 00: Installing base packages ==="
 
-export DEBIAN_FRONTEND=noninteractive
-
 apt_update_once "00-apt-base package index refresh"
 
-apt-get install -y \
-    git \
-    flatpak \
-    curl \
-    wget \
-    gnupg \
-    zsh \
-    unzip \
-    fontconfig \
-    ca-certificates \
-    fonts-powerline \
-    build-essential \
-    cmake \
-    bsdutils \
-    diffutils \
-    findutils \
-    grep \
-    gzip \
-    hostname \
-    rename
+sudo apt install -y git
+sudo apt install -y flatpak
+sudo apt install -y curl
+sudo apt install -y wget
+sudo apt install -y gnupg
+sudo apt install -y zsh
+sudo apt install -y unzip
+sudo apt install -y ca-certificates
+sudo apt install -y gzip
+sudo apt install -y htop
+sudo apt install -y traceroute
+sudo apt install -y tree
+sudo apt install -y wl-clipboard
+sudo apt install -y fonts-firacode
 
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "=== 00: Base packages installed ==="
