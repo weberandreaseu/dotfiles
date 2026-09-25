@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+if command -v junoctl >/dev/null 2>&1; then
+    junoctl update --yes || true
+    junoctl skills update || true
+fi
+
+if command -v dtctl >/dev/null 2>&1; then
+    dtctl skills install --for claude --global || true
+fi

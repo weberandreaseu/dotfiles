@@ -121,3 +121,13 @@ if command -v mise >/dev/null 2>&1; then
 fi
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+
+if command -v mise >/dev/null 2>&1; then
+    source <(mise completion zsh)
+fi
+if command -v junoctl >/dev/null 2>&1; then
+    source <(junoctl completion zsh)
+fi
+if command -v dtctl >/dev/null 2>&1; then
+    source <(dtctl completion zsh)
+fi
