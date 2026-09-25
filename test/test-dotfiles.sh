@@ -148,7 +148,7 @@ else
     fail "Temurin Java not found or not runnable via mise"
 fi
 
-for tool in claude fzf zoxide opencode jq yq fd rg bat eza; do
+for tool in claude fzf zoxide opencode jq yq fd rg bat eza gradle; do
     if zsh -i -c "command -v $tool >/dev/null && $tool --version >/dev/null" 2>/dev/null; then
         pass "$tool installed via mise"
     else
@@ -156,11 +156,19 @@ for tool in claude fzf zoxide opencode jq yq fd rg bat eza; do
     fi
 done
 
-if zsh -i -c "command -v kubectl >/dev/null && kubectl version --client >/dev/null" 2>/dev/null; then
-    pass "kubectl installed via mise"
-else
-    fail "kubectl not found or not runnable via mise"
-fi
+# These report their version through a subcommand, not --version.
+for entry in "kubectl:kubectl version --client" \
+             "minikube:minikube version" \
+             "skaffold:skaffold version" \
+             "helm:helm version"; do
+    tool="${entry%%:*}"
+    version_cmd="${entry#*:}"
+    if zsh -i -c "command -v $tool >/dev/null && $version_cmd >/dev/null" 2>/dev/null; then
+        pass "$tool installed via mise"
+    else
+        fail "$tool not found or not runnable via mise"
+    fi
+done
 
 if command -v docker &> /dev/null || [ -f /usr/bin/docker ]; then
     pass "docker installed"

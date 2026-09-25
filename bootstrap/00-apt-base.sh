@@ -18,6 +18,7 @@ sudo apt install -y zsh
 sudo apt install -y unzip
 sudo apt install -y ca-certificates
 sudo apt install -y gzip
+sudo apt install -y vim
 sudo apt install -y htop
 sudo apt install -y traceroute
 sudo apt install -y tree

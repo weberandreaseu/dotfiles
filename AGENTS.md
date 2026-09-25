@@ -64,6 +64,10 @@ The Docker test runs these validations from `test/test-dotfiles.sh`:
 - Codex
 - Claude Code
 - kubectl
+- `minikube`
+- `skaffold`
+- `helm`
+- `gradle`
 - `Docker`
 - `VS Code`
 - `JetBrains Toolbox`
