@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
+# mise fetches release metadata and assets from GitHub; an authenticated token
+# avoids the low anonymous rate limit. Best effort only: if gh is missing or has
+# no token, run the updates unauthenticated.
+if command -v gh >/dev/null 2>&1; then
+    github_token="$(gh auth token 2>/dev/null)" || github_token=""
+    if [ -n "$github_token" ]; then
+        export GITHUB_TOKEN="$github_token"
+    fi
+    unset github_token
+fi
+
 if command -v mise >/dev/null 2>&1; then
     mise self-update --yes || true
     mise upgrade || true
