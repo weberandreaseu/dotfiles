@@ -114,4 +114,19 @@ if command -v ghostty &> /dev/null; then
     fi
 fi
 
+# Activate user systemd timers deployed via dotfiles.
+# mise manages the service units (state=stopped, triggered by timers) but has no
+# timer equivalent, so we handle daemon-reload + enable/start here.
+if systemctl --user status >/dev/null 2>&1; then
+    systemctl --user daemon-reload
+    for timer in update-tools.timer update-skills.timer; do
+        if [ -f "$HOME/.config/systemd/user/$timer" ]; then
+            systemctl --user enable --now "$timer"
+            echo "Enabled and started systemd user timer: $timer"
+        fi
+    done
+else
+    echo "Skipping systemd user timer activation (no user bus available, expected in containers)."
+fi
+
 echo "=== 08: Dotfiles installed ==="
