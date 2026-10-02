@@ -6,6 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CUSTOM_SHORTCUTS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-custom-shortcuts.dconf"
 WM_KEYBINDINGS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-wm-keybindings.dconf"
 MUTTER_KEYBINDINGS_DCONF_FILE="$SCRIPT_DIR/assets/gnome-mutter-keybindings.dconf"
+CLIPBOARD_INDICATOR_DCONF_FILE="$SCRIPT_DIR/assets/gnome-clipboard-indicator.dconf"
 
 CLIPBOARD_INDICATOR_UUID="clipboard-indicator@tudmotu.com"
 CLIPBOARD_INDICATOR_EXTENSION_PK="779"
@@ -54,6 +55,7 @@ apply_custom_shortcuts() {
     apply_dconf_file "/org/gnome/settings-daemon/plugins/media-keys/" "$CUSTOM_SHORTCUTS_DCONF_FILE"
     apply_dconf_file "/org/gnome/desktop/wm/keybindings/" "$WM_KEYBINDINGS_DCONF_FILE"
     apply_dconf_file "/org/gnome/mutter/keybindings/" "$MUTTER_KEYBINDINGS_DCONF_FILE"
+    apply_dconf_file "/org/gnome/shell/extensions/clipboard-indicator/" "$CLIPBOARD_INDICATOR_DCONF_FILE"
 
     echo "GNOME keybindings import completed"
 }
