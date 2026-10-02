@@ -1,2 +1,4 @@
 [/]
 close=['<Shift><Super>q']
+switch-to-workspace-left=@as []
+switch-to-workspace-right=@as []

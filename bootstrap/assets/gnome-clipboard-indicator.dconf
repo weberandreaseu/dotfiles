@@ -1,0 +1,6 @@
+[/]
+clear-history=['<Super>F10']
+next-entry=['<Super>F12']
+prev-entry=['<Super>F11']
+private-mode-binding=['<Super>F8']
+toggle-menu=['<Super>F9']
