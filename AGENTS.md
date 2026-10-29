@@ -13,7 +13,7 @@ File structure:
 
 - `bootstrap/` - numbered installation scripts (00-apt-base, 01-mise, 02-repos, 03-fonts, 05-gnome, 06-tools, 08-dotfiles, 09-firefox)
 - `test/` test scripts for validation in Docker
-- `bin/` personal scripts (currently empty)
+- `bin/` personal scripts (currently empty); personal scripts deployed to `~/bin` live in `dotfiles/bin/` (e.g. `workhours`)
 - `dotfiles/` managed dotfiles sources mirrored into `$HOME` via `mise`
 - `mise.toml` `[dotfiles]` declarations and settings
 

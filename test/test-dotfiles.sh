@@ -212,6 +212,13 @@ else
     fail "Snap desktop-entry path is missing from XDG_DATA_DIRS"
 fi
 
+WORKHOURS="$HOME/git/dotfiles/dotfiles/bin/workhours"
+if bash -n "$WORKHOURS" && "$WORKHOURS" --help >/dev/null 2>&1; then
+    pass "workhours script is valid"
+else
+    fail "workhours script is missing or invalid"
+fi
+
 GRADIA_LAUNCHER="$HOME/.local/bin/gradia"
 if [ -x "$GRADIA_LAUNCHER" ] \
     && grep -qx 'exec flatpak run be.alexandervanhee.gradia "$@"' "$GRADIA_LAUNCHER"; then
