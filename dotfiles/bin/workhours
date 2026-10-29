@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+# workhours - estimate daily working hours from systemd-journal events.
+#
+# Start of day: first login of $USER, boot, lid-open or resume from suspend.
+# End of day:   last shutdown, lid-close or suspend. If a boot ended without a
+#               clean shutdown (crash/power loss) or is still running, the last
+#               journal line of that boot is used and the row is marked '*'.
+# Span only: breaks (lid closed, suspended) are NOT subtracted.
+set -euo pipefail
+
+usage() {
+    cat <<USAGE
+Usage: workhours [DAYS]
+
+Show estimated working hours for the last DAYS days (default: 7, today included).
+'*' marks days whose end time is estimated (last journal line / still running).
+USAGE
+}
+
+case "${1:-}" in
+    -h|--help) usage; exit 0 ;;
+esac
+
+days=${1:-7}
+if [[ ! $days =~ ^[1-9][0-9]*$ ]] || [[ $# -gt 1 ]]; then
+    usage >&2
+    exit 1
+fi
+
+command -v journalctl >/dev/null || { echo "workhours: journalctl not found" >&2; exit 1; }
+
+now=$(printf '%(%s)T' -1)
+since=$(date -d "$((days - 1)) days ago 00:00" +%s)
+
+# Emit "<epoch> <kind>" lines. Kinds: S start, E end, X estimated end.
+jc() { journalctl -q --no-pager -o short-unix --since "@$since" "$@" 2>/dev/null || true; }
+
+collect_events() {
+    local ts rest
+    # logind: logins, lid and shutdown events (filtered to this user's sessions)
+    while read -r ts rest; do
+        [[ $ts =~ ^[0-9] ]] || continue
+        ts=${ts%.*}
+        case $rest in
+            *"New session"*"of user $USER."*) echo "$ts S" ;;
+            *"Lid opened"*) echo "$ts S" ;;
+            *"Lid closed"*) echo "$ts E" ;;
+            *"System is "*) echo "$ts E"; echo "$ts D" ;;
+        esac
+    done < <(jc -u systemd-logind -g 'New session|Lid (opened|closed)|System is (powering down|rebooting|halting)')
+
+    # kernel: suspend/resume (covers idle suspend without lid)
+    while read -r ts rest; do
+        [[ $ts =~ ^[0-9] ]] || continue
+        ts=${ts%.*}
+        case $rest in
+            *"suspend entry"*) echo "$ts E" ;;
+            *"suspend exit"*)  echo "$ts S" ;;
+        esac
+    done < <(jc -k -g 'PM: suspend (entry|exit)')
+}
+
+# Per boot: boot start is a start event; if the boot did not end with a clean
+# shutdown, its last journal line is an estimated end.
+collect_boots() {
+    local i first last
+    for ((i = 0; ; i--)); do
+        last=$(journalctl -q --no-pager -o short-unix -b "$i" -n 1 2>/dev/null) || break
+        [[ -n $last ]] || break
+        last=${last%%[. ]*}
+        ((last >= since)) || break
+        first=
+        read -r first _ < <(journalctl -q --no-pager -o short-unix -b "$i" 2>/dev/null) || true
+        first=${first%.*}
+        [[ $first =~ ^[0-9]+$ ]] && echo "$first S"
+        if ((i == 0)); then
+            echo "$now X"
+        else
+            echo "$last B"
+        fi
+    done
+}
+
+declare -A start end est
+declare -a shutdowns=() boot_ends=()
+
+while read -r ts kind; do
+    case $kind in
+        D) shutdowns+=("$ts"); continue ;;
+        B) boot_ends+=("$ts"); continue ;;
+    esac
+    ((ts >= since)) || continue
+    printf -v day '%(%F)T' "$ts"
+    case $kind in
+        S) if [[ -z ${start[$day]:-} ]] || ((ts < start[$day])); then start[$day]=$ts; fi ;;
+        E|X)
+            if [[ -z ${end[$day]:-} ]] || ((ts > end[$day])); then
+                end[$day]=$ts
+                est[$day]=$([[ $kind == X ]] && echo 1 || echo 0)
+            fi ;;
+    esac
+done < <(collect_events; collect_boots)
+
+# Boots that ended without a shutdown event in the last 5 minutes: estimated end.
+for b in "${boot_ends[@]}"; do
+    clean=0
+    for d in "${shutdowns[@]}"; do
+        ((b - d >= 0 && b - d <= 300)) && { clean=1; break; }
+    done
+    ((clean)) && continue
+    printf -v day '%(%F)T' "$b"
+    if [[ -z ${end[$day]:-} ]] || ((b > end[$day])); then
+        end[$day]=$b
+        est[$day]=1
+    fi
+done
+
+fmt_dur() { printf '%d:%02d' $(($1 / 3600)) $(($1 % 3600 / 60)); }
+
+printf '%-14s %-6s %-6s %s\n' Date Start End Span
+total=0
+shown=0
+while read -r day; do
+    [[ -n ${start[$day]:-} && -n ${end[$day]:-} ]] || continue
+    s=${start[$day]} e=${end[$day]}
+    ((e >= s)) || continue
+    printf -v dlabel '%(%a %F)T' "$s"
+    printf -v st '%(%H:%M)T' "$s"
+    printf -v en '%(%H:%M)T' "$e"
+    mark=
+    [[ ${est[$day]} == 1 ]] && mark=' *'
+    printf '%-14s %-6s %-6s %s%s\n' "$dlabel" "$st" "$en" "$(fmt_dur $((e - s)))" "$mark"
+    total=$((total + e - s))
+    shown=$((shown + 1))
+done < <(printf '%s\n' "${!start[@]}" | sort)
+
+((shown)) || { echo "(no data in journal for the last $days days)"; exit 0; }
+printf '%-14s %-6s %-6s %s\n' Total '' '' "$(fmt_dur "$total")"
