@@ -75,19 +75,18 @@ fi
 if [[ -o interactive && ! -o zle ]]; then
     ZSH_TAB_BOOTSTRAP_WIDGET=""
 elif [[ "${ZSH_LAZY_COMPINIT:-1}" == "1" ]]; then
-    # First TAB press pays for compinit, then hands TAB over to the real widget.
-    # Re-queue the TAB with `zle -U` instead of calling the widget directly:
-    # fzf-tab accepts a selection via a `zle -C` completion widget, and invoking
-    # that from inside another widget crashes zsh. Ungetting the key makes ZLE
-    # dispatch it at top level once this widget returns.
+    # Defer compinit to a one-shot precmd, i.e. after the first prompt is drawn.
+    # Running compinit from inside a ZLE widget (e.g. on the first TAB) while
+    # fzf-tab is loaded segfaults zsh, so it must happen outside of ZLE.
     _lazy_compinit() {
-        zle -D _lazy_compinit
+        add-zsh-hook -d precmd _lazy_compinit
+        unfunction _lazy_compinit
         _run_compinit
         bindkey '^I' "$ZSH_TAB_WIDGET"
-        zle -U $'\t'
     }
-    zle -N _lazy_compinit
-    ZSH_TAB_BOOTSTRAP_WIDGET=_lazy_compinit
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd _lazy_compinit
+    ZSH_TAB_BOOTSTRAP_WIDGET="$ZSH_TAB_WIDGET"
 else
     _run_compinit
     ZSH_TAB_BOOTSTRAP_WIDGET="$ZSH_TAB_WIDGET"
