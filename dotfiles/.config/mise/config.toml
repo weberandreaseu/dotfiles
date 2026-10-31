@@ -19,3 +19,8 @@ bat = "latest"
 eza = "latest"
 gh = "latest"
 "github:dynatrace-oss/dtctl" = "latest"
+# Eclipse JDT.LS (Java language server, used by Claude Code's jdtls-lsp plugin).
+# Pinned milestone + sha256: upstream publishes no GitHub releases and the tarball
+# name embeds a build timestamp, so bump version, url and checksum together.
+# Checksum from the .sha256 file next to the tarball on download.eclipse.org.
+"http:jdtls" = { version = "1.63.0", url = "https://download.eclipse.org/jdtls/milestones/{{ version }}/jdt-language-server-{{ version }}-202610191322.tar.gz", checksum = "sha256:b1f2abe0b3cccb462cf64fb4a5587c7d09df60cf8be7748b152cbd89d018bdc4", bin_path = "bin" }
