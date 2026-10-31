@@ -156,6 +156,13 @@ for tool in claude fzf zoxide opencode jq yq fd rg bat eza gradle; do
     fi
 done
 
+# jdtls has no --version flag (it starts a language server), so only check it resolves.
+if zsh -i -c "command -v jdtls >/dev/null" 2>/dev/null; then
+    pass "jdtls installed via mise"
+else
+    fail "jdtls not found via mise"
+fi
+
 # These report their version through a subcommand, not --version.
 for entry in "kubectl:kubectl version --client" \
              "minikube:minikube version" \
