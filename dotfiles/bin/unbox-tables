@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""Convert box-drawing tables (as printed by Claude Code) into Markdown tables.
+
+Usage: unbox-tables [file-or-folder]
+
+- No argument: read from stdin, write the result to stdout.
+- File: converted in place. Non-.md files require confirmation first.
+- Folder: all *.md files in the folder and its subfolders are converted.
+
+Only box tables (┌ ... └ blocks) are touched. Everything else, including
+existing Markdown tables and stray | characters, is left as is.
+If a box table is the only content of a ``` code fence, the fence is removed
+so the Markdown table renders.
+"""
+import sys
+from pathlib import Path
+
+TOP, MID, BOTTOM, V = "┌", "├", "└", "│"
+
+
+def parse_table(lines):
+    """Turn box-table lines into a list of rows (each a list of cell strings)."""
+    rows, current = [], None
+    for line in lines:
+        s = line.strip()
+        if s.startswith((TOP, MID, BOTTOM)):
+            if current is not None:
+                rows.append(current)
+            current = None
+            continue
+        if s.startswith(V):
+            cells = [c.strip() for c in s.strip(V).split(V)]
+            if current is None:
+                current = cells
+            else:  # continuation line of a wrapped row
+                current = [" ".join(p for p in (a, b) if p)
+                           for a, b in zip(current, cells)]
+    if current is not None:
+        rows.append(current)
+    return rows
+
+
+def to_markdown(rows, indent=""):
+    esc = [[c.replace("|", r"\|") for c in r] for r in rows]
+    n = max(len(r) for r in esc)
+    esc = [r + [""] * (n - len(r)) for r in esc]
+    widths = [max(3, *(len(r[i]) for r in esc)) for i in range(n)]
+    fmt = lambda r: indent + "| " + " | ".join(c.ljust(w) for c, w in zip(r, widths)) + " |"
+    out = [fmt(esc[0]), indent + "| " + " | ".join("-" * w for w in widths) + " |"]
+    out += [fmt(r) for r in esc[1:]]
+    return out
+
+
+def convert(text):
+    lines = text.split("\n")
+    out, i, changed = [], 0, False
+    while i < len(lines):
+        s = lines[i].lstrip()
+        if not s.startswith(TOP):
+            out.append(lines[i])
+            i += 1
+            continue
+        indent = lines[i][: len(lines[i]) - len(s)]
+        j = i
+        while j < len(lines) and not lines[j].lstrip().startswith(BOTTOM):
+            if j > i and not lines[j].lstrip().startswith((V, MID)):
+                break  # malformed table: leave untouched
+            j += 1
+        if j >= len(lines) or not lines[j].lstrip().startswith(BOTTOM):
+            out.append(lines[i])
+            i += 1
+            continue
+        block = lines[i : j + 1]
+        last = block[-1]
+        trailing = last[last.rfind("┘") + 1 :].strip() if "┘" in last else ""
+        rows = parse_table(block)
+        if not rows:
+            out.append(lines[i])
+            i += 1
+            continue
+        md = to_markdown(rows, indent)
+        changed = True
+
+        # Drop a surrounding ``` fence when it wraps only this table.
+        k = len(out) - 1
+        while k >= 0 and not out[k].strip():
+            k -= 1
+        opens_fence = k >= 0 and out[k].strip() == "```"
+        nxt = j + 1
+        if trailing == "```":
+            closes_fence, close_idx = True, None
+        else:
+            while nxt < len(lines) and not lines[nxt].strip():
+                nxt += 1
+            closes_fence = not trailing and nxt < len(lines) and lines[nxt].strip() == "```"
+            close_idx = nxt
+        if opens_fence and closes_fence:
+            del out[k:]
+            out.extend(md)
+            i = j + 1 if close_idx is None else close_idx + 1
+        else:
+            out.extend(md)
+            if trailing:
+                out.append(indent + trailing)
+            i = j + 1
+    return "\n".join(out), changed
+
+
+def process(path):
+    text = path.read_text(encoding="utf-8")
+    new, changed = convert(text)
+    if changed:
+        path.write_text(new, encoding="utf-8")
+        print(f"converted: {path}")
+
+
+def main():
+    if len(sys.argv) == 1:
+        if sys.stdin.isatty():
+            sys.exit(f"usage: {Path(sys.argv[0]).name} [file-or-folder]  (or pipe text via stdin)")
+        sys.stdout.write(convert(sys.stdin.read())[0])
+        return
+    if len(sys.argv) != 2:
+        sys.exit(f"usage: {Path(sys.argv[0]).name} [file-or-folder]")
+    target = Path(sys.argv[1])
+    if target.is_dir():
+        for p in sorted(target.rglob("*.md")):
+            process(p)
+    elif target.is_file():
+        if target.suffix.lower() != ".md":
+            ans = input(f"WARNING: {target} is not a .md file. Continue? [y/N] ")
+            if ans.strip().lower() not in ("y", "yes"):
+                sys.exit("aborted")
+        process(target)
+    else:
+        sys.exit(f"not found: {target}")
+
+
+if __name__ == "__main__":
+    main()

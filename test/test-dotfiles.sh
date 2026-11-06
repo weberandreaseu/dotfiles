@@ -226,6 +226,17 @@ else
     fail "workhours script is missing or invalid"
 fi
 
+UNBOX_TABLES="$HOME/git/dotfiles/dotfiles/bin/unbox-tables"
+if ! command -v python3 &> /dev/null; then
+    [ -x "$UNBOX_TABLES" ] && pass "unbox-tables script is present (python3 unavailable, conversion not tested)" \
+        || fail "unbox-tables script is missing"
+elif printf '┌───┬───┐\n│ A │ B │\n├───┼───┤\n│ 1 │ x|y │\n└───┴───┘\n' | "$UNBOX_TABLES" \
+        | grep -qF '| 1   | x\|y |'; then
+    pass "unbox-tables converts box tables"
+else
+    fail "unbox-tables script is missing or invalid"
+fi
+
 GRADIA_LAUNCHER="$HOME/.local/bin/gradia"
 if [ -x "$GRADIA_LAUNCHER" ] \
     && grep -qx 'exec flatpak run be.alexandervanhee.gradia "$@"' "$GRADIA_LAUNCHER"; then
