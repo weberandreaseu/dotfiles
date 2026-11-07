@@ -41,6 +41,7 @@ environment = { HOME = "~", PATH = "~/.local/share/mise/shims:~/.local/bin:/usr/
 "~/.config/xdg-terminals.list" = "dotfiles/.config/xdg-terminals.list"
 "~/.local/bin/gradia" = "dotfiles/.local/bin/gradia"
 "~/bin/workhours" = "dotfiles/bin/workhours"
+"~/bin/unbox-tables" = "dotfiles/bin/unbox-tables"
 "~/.local/share/backgrounds/wallpaper.jpg" = "dotfiles/.local/share/backgrounds/wallpaper.jpg"
 "~/.claude/statusline.sh" = "dotfiles/.claude/statusline.sh"
 "~/.local/bin/update-tools" = "dotfiles/.local/bin/update-tools"
