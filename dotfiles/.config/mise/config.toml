@@ -18,6 +18,8 @@ ripgrep = "latest"
 bat = "latest"
 eza = "latest"
 gh = "latest"
+go = "latest"
+python = "latest"
 "github:dynatrace-oss/dtctl" = "latest"
 # Eclipse JDT.LS (Java language server, used by Claude Code's jdtls-lsp plugin).
 # Pinned milestone + sha256: upstream publishes no GitHub releases and the tarball
